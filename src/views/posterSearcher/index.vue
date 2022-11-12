@@ -28,11 +28,13 @@
       <el-form-item label="报告时间">
         <el-col :span="11">
           <el-date-picker
-              v-model="value1"
+              v-model="form.time"
               type="datetimerange"
               range-separator="至"
               start-placeholder="开始时间"
-              end-placeholder="结束时间">
+              end-placeholder="结束时间"
+              format="yyyy-MM-dd HH:mm"
+              value-format="yyyy-MM-dd HH:mm">
           </el-date-picker>
         </el-col>
       </el-form-item>
@@ -51,21 +53,21 @@
       <el-form-item label="线上会议号">
         <el-input v-model="form.meeting_num"></el-input>
       </el-form-item>
-<!--      <el-form-item label="报告人照片">-->
-<!--        <el-upload-->
-<!--          class="upload-demo"-->
-<!--          action="https://jsonplaceholder.typicode.com/posts/"-->
-<!--          :on-preview="handlePreview"-->
-<!--          :on-remove="handleRemove"-->
-<!--          :before-remove="beforeRemove"-->
-<!--          multiple-->
-<!--          :limit="3"-->
-<!--          :on-exceed="handleExceed"-->
-<!--          :file-list="fileList">-->
-<!--          <el-button size="mini" type="primary">点击上传</el-button>-->
-<!--          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
-<!--        </el-upload>-->
-<!--      </el-form-item>-->
+      <el-form-item label="报告人照片">
+        <el-upload
+          class="upload-demo"
+          action="https://jsonplaceholder.typicode.com/posts/"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :before-remove="beforeRemove"
+          multiple
+          :limit="3"
+          :on-exceed="handleExceed"
+          :file-list="fileList">
+          <el-button size="mini" type="primary">点击上传</el-button>
+          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+        </el-upload>
+      </el-form-item>
       <el-form-item>
         <el-button style="font-weight: bold;"
                    icon="el-icon-magic-stick"
@@ -86,10 +88,9 @@ export default {
   data() {
     return {
       form: {
-        title: '6666666',
+        title: '',
         location: '',
-        start_time: '',
-        end_time: '',
+        time: '',
         reporter: '',
         inviter: '',
         abstract: '',
@@ -100,7 +101,7 @@ export default {
   },
   methods: {
     onSubmit() {
-      console.log('submit!')
+      console.log(this.form)
       axios.get('http://localhost:5000/submit_poster_info', {
         params: this.form
       }).then((resp) => {
