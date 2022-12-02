@@ -57,6 +57,7 @@ export default {
   },
   data() {
     return {
+      id: '',
       text: '',
       initLoading: false,
       collapse: true
@@ -118,6 +119,9 @@ export default {
     })
   },
   async mounted() {
+        // this.id = this.$route.params.id  //12345
+    this.id = this.$route.query.id
+    console.log('jrz_log:print current id', this.id)
     document.addEventListener('keydown', this.keydownHandle)
     this.body = document.body
     this.mainPanelRef = this.$refs.main.$refs.mainPanel

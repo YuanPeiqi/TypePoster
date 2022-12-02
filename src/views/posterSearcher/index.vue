@@ -69,13 +69,16 @@
         </el-upload>
       </el-form-item>
       <el-form-item>
-        <el-button style="font-weight: bold;"
+
+  <router-link :to="{path:'/choose'}">
+   <el-button style="font-weight: bold;"
                    icon="el-icon-magic-stick"
                    type="primary"
                    @click="onSubmit"
                    round>
           立即生成
-        </el-button>
+   </el-button>
+  </router-link>
       </el-form-item>
     </el-form>
     </div>
@@ -84,6 +87,7 @@
 
 <script>
 import axios from 'axios'
+import Bus from '../../utils/bus.js'
 export default {
   data() {
     return {
@@ -106,6 +110,8 @@ export default {
         params: this.form
       }).then((resp) => {
         console.log(resp.data)
+        Bus.$emit('val', resp.data)
+        // this.$router.push('editor')
       })
     }
   }

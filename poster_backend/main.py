@@ -21,8 +21,11 @@ def submit_poster_info():
     abstract = request.values.get('abstract')
     introduction = request.values.get('introduction')
     meeting_num = request.values.get('meeting_num')
-    result = 'welcome'
+    result = generate_basic()
     return jsonify(result)
+
+def generate_basic():
+    return 'success'
 
 
 if __name__ == '__main__':
