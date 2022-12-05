@@ -80,7 +80,7 @@
           <i class="icon-h5" />
         </div>
       </el-tooltip>
-      <!-- <el-tooltip
+      <el-tooltip
         effect="dark"
         content="生成海报"
         placement="left"
@@ -89,7 +89,7 @@
         <div class="item" @click="exportPoster">
           <i class="icon-poster" />
         </div>
-      </el-tooltip> -->
+      </el-tooltip>
       <el-tooltip
         effect="dark"
         content="快捷键参考"

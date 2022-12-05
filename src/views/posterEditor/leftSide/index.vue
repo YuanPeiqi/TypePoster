@@ -139,7 +139,7 @@ export default {
     }
   }
   .widget-container {
-    width: 300px;
+    width: 350px;
     height: 100%;
   }
 }

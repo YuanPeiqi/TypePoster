@@ -1,5 +1,4 @@
 import * as MTS from './poster.mutations'
-// import { Message } from 'element-ui'
 import { Widget, BackgroundWidget, CopiedWidget } from 'poster/widgetConstructor'
 import { arrMoveTop, arrMoveUpper, arrMoveLower, arrMoveBottom } from 'poster/utils'
 import { isPlainObject } from '@/utils'
@@ -16,8 +15,8 @@ function getState() {
         pageConfigId: '',
         pageTitle: '',
         canvasSize: {
-            width: 338,
-            height: 600
+            width: 501,
+            height: 837
         },
         canvasPosition: {
             top: null,
