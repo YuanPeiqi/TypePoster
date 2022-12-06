@@ -37,7 +37,11 @@
       ref="image"
       :src="wState.src"
       class="qr-code"
-      style="width:100%;height:100%"
+      :style="{
+        width: '100%',
+        height: '100%',
+        opacity: wState.opacity
+      }"
       ondragstart="return false"
     >
     <!-- <portal v-if="isActive" to="widgetControl">

@@ -15,8 +15,8 @@ function getState() {
         pageConfigId: '',
         pageTitle: '',
         canvasSize: {
-            width: 501,
-            height: 837
+            width: 680,
+            height: 907
         },
         canvasPosition: {
             top: null,

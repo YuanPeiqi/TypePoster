@@ -44,5 +44,21 @@ def get_poster_view(imageId):
             return resp
 
 
+@app.route("/get_image/<imageId>.png")
+def get_image(imageId):
+    # 图片上传保存的路径
+    import os
+    if os.path.exists(r'static/img_resource/{}.png'.format(imageId)):
+        with open(r'static/img_resource/{}.png'.format(imageId), 'rb') as f:
+            image = f.read()
+            resp = Response(image, mimetype="image/png")
+            return resp
+    else:
+        with open(r'static/img_resource/{}.png'.format('img_resource/bg'), 'rb') as f:
+            image = f.read()
+            resp = Response(image, mimetype="image/png")
+            return resp
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

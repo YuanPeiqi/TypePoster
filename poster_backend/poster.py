@@ -95,7 +95,7 @@ class Poster:
                  x=550, y=750, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
         add_text(img=temp_canvas, text=self._location, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
                  x=550 + 3 * info_font_size, y=750 + font_shift, font_size=info_font_size, font_color=(0, 0, 0), bold=True)
-        add_text(img=temp_canvas, text='演讲人:', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
+        add_text(img=temp_canvas, text='报告人:', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
                  x=550, y=850, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
         add_text(img=temp_canvas, text=self._reporter, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
                  x=550 + 4 * info_font_size, y=850 + font_shift, font_size=info_font_size, font_color=(0, 0, 0), bold=True)
