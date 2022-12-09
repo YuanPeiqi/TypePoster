@@ -1,10 +1,7 @@
 #include "LayoutExplorer.h"
 
-LayoutExplorer::LayoutExplorer(QWidget *parent)
-	: QMainWindow(parent)
+LayoutExplorer::LayoutExplorer()
 {
-	ui.setupUi(this);
-
 	m_firstLayout = nullptr;
 	m_secondLayout = nullptr;
 
@@ -14,10 +11,8 @@ LayoutExplorer::LayoutExplorer(QWidget *parent)
 	comb_tree_root = nullptr;
 	comb_tree_root_copy = nullptr;
 
-	ui.horizontalSlider->setRange(0.0, 1.02);
-
-	connect(ui.horizontalSlider, &QSlider::sliderMoved, this, &LayoutExplorer::MovedAndCreate);
-	connect(ui.horizontalSlider, &QSlider::sliderMoved, this, &LayoutExplorer::OutputWidgetRedraw);
+	// connect(ui.horizontalSlider, &QSlider::sliderMoved, this, &LayoutExplorer::MovedAndCreate);
+	// connect(ui.horizontalSlider, &QSlider::sliderMoved, this, &LayoutExplorer::OutputWidgetRedraw);
 }
 
 LayoutExplorer::~LayoutExplorer()
@@ -46,28 +41,21 @@ LayoutExplorer::~LayoutExplorer()
 		combine_tree_copy = nullptr;
 	}
 }
-
-void LayoutExplorer::OutputWidgetRedraw()
-{
-	//active paintEvent，repaint
-	ui.output_widget->repaint();
-}
-
 void LayoutExplorer::OpenNextLayout()
 {
-	static const QString defaultPath("DEFAULT_LAYOUT_FILE_PATH");
-	QSettings thisSetting;
-	QString path = thisSetting.value(defaultPath).toString();
-	QString filter = "(*.lay);;(*.*)";
+	// static const QString defaultPath("DEFAULT_LAYOUT_FILE_PATH");
+	// QSettings thisSetting;
+	// QString path = thisSetting.value(defaultPath).toString();
+	// QString filter = "(*.lay);;(*.*)";
 
-	QString file_name = QFileDialog::getOpenFileName(this, tr("Open layout"), path, filter);
-	std::string fileName = file_name.toStdString();
-
+	// QString file_name = QFileDialog::getOpenFileName(this, tr("Open layout"), path, filter);
+	// std::string fileName = file_name.toStdString();
+	std::string fileName = ".\\TestData\\183_layout.lay";
 	if (fileName.length() > 0)
 	{
 		if (m_uploadLayout.size() == 2)
 		{
-			ui.output_widget->draw_layout_state = false;
+			// ui.output_widget->draw_layout_state = false;
 			for (int i = 0; i < 2; i++)
 			{
 				if (m_uploadLayout[i] != nullptr)
@@ -83,11 +71,11 @@ void LayoutExplorer::OpenNextLayout()
 		m_uploadLayout.back()->ReadFromFile(fileName);
 
 		std::string name = fileName;
-		QDir crtDir;
-		size_t found = name.find_last_of('/');
-		name = name.substr(0, found);
-		QString nameQ = QString::fromStdString(name);
-		thisSetting.setValue(defaultPath, crtDir.absoluteFilePath(nameQ));
+		// QDir crtDir;
+		// size_t found = name.find_last_of('/');
+		// name = name.substr(0, found);
+		// QString nameQ = QString::fromStdString(name);
+		// thisSetting.setValue(defaultPath, crtDir.absoluteFilePath(nameQ));
 	}
 	return;
 }
@@ -129,12 +117,13 @@ void LayoutExplorer::MovedAndCreate()
 	}
 
 	CopyTree();
-	DeterInterVar(ui.horizontalSlider->value());
-	layout_handler.TransferAndSolve(ui.horizontalSlider->value());
+	// ui.horizontalSlider->value() = 0.25
+	DeterInterVar(0.25);
+	layout_handler.TransferAndSolve(0.25);
 	SetCompoundNodeLabel();
 
-	ui.output_widget->draw_layout_state = true;
-	ui.output_widget->output_widget_tree = comb_tree_root_copy;
+	// ui.output_widget->draw_layout_state = true;
+	// ui.output_widget->output_widget_tree = comb_tree_root_copy;
 
 	return;
 }
@@ -171,7 +160,7 @@ void LayoutExplorer::BatchCreateLay()
 		SetCompoundNodeLabel();
 		SaveGenerLayoutForBatch(i);
 
-		ui.output_widget->output_widget_tree = comb_tree_root_copy;
+		// ui.output_widget->output_widget_tree = comb_tree_root_copy;
 		BatchSaveLayoutAsSvg(i);
 	}
 
@@ -185,11 +174,11 @@ void LayoutExplorer::SaveGenerLayout()
 	transfer_index.resize(500, 0);
 	int index_counter = 1;
 
-	QString fileName;
-	fileName = QFileDialog::getSaveFileName(this, "Save", "", "Lay (*.lay)");
-
+	string fileName;
+	// fileName = QFileDialog::getSaveFileName(this, "Save", "", "Lay (*.lay)");
+	fileName = ".\\TestResult\\res.lay";
 	std::fstream File_output;
-	File_output.open(fileName.toStdString(), std::fstream::out);
+	File_output.open(fileName, std::fstream::out);
 	File_output << "node attribute" << std::endl;
 
 	CompoundNode* root_display_layout = comb_tree_root_copy;
@@ -446,26 +435,25 @@ void LayoutExplorer::SaveGenerLayout()
 
 void LayoutExplorer::BatchSaveLayoutAsSvg(int order)
 {
-	QString fileName;
-	//对于批处理设一个固定的输出路径
-	QString prefix = "C:/Users/Administrator/Desktop/SIGA2022/SameStructureWithoutSameLabel/change_part_labels/";
+	// string fileName;
+	// string prefix = "C:/Users/Administrator/Desktop/SIGA2022/SameStructureWithoutSameLabel/change_part_labels/";
 
-	QString num_to_qstring = QString::number(order, 10);
-	QString houzui = ".svg";
-	fileName = prefix + num_to_qstring + houzui;
+	// string num_to_qstring = QString::number(order, 10);
+	// string suffix = ".svg";
+	// fileName = prefix + num_to_qstring + suffix;
 
-	if (fileName.length() > 0)
-	{
-		QSvgGenerator generator;
-		generator.setFileName(fileName);
-		generator.setSize(QSize(ui.output_widget->width(), ui.output_widget->height()));
-		generator.setViewBox(QRect(ui.output_widget->x(), ui.output_widget->y(), ui.output_widget->width(), ui.output_widget->height()));
-		generator.setTitle("SVG Generator Example Drawing");
-		QPainter painter;
-		painter.begin(&generator);
-		this->window()->render(&painter);
-		painter.end();
-	}
+	// if (fileName.length() > 0)
+	// {
+	// 	QSvgGenerator generator;
+	// 	generator.setFileName(fileName);
+	// 	generator.setSize(QSize(ui.output_widget->width(), ui.output_widget->height()));
+	// 	generator.setViewBox(QRect(ui.output_widget->x(), ui.output_widget->y(), ui.output_widget->width(), ui.output_widget->height()));
+	// 	generator.setTitle("SVG Generator Example Drawing");
+	// 	QPainter painter;
+	// 	painter.begin(&generator);
+	// 	this->window()->render(&painter);
+	// 	painter.end();
+	// }
 	return;
 }
 
@@ -510,15 +498,15 @@ void LayoutExplorer::SaveGenerLayoutForBatch(int order)
 	transfer_index.resize(500, 0);
 	int index_counter = 1;
 
-	QString fileName;
-	QString prefix = "C:/Users/Administrator/Desktop/SIGA2022/SameStructureWithoutSameLabel/change_part_labels/";
+	string fileName;
+	string prefix = "C:/Users/Administrator/Desktop/SIGA2022/SameStructureWithoutSameLabel/change_part_labels/";
 
-	QString num_to_qstring = QString::number(order, 10);
-	QString houzui = ".lay";
-	fileName = prefix + num_to_qstring + houzui;
+	string num_to_qstring = std::to_string(order);
+	string suffix = ".lay";
+	fileName = prefix + num_to_qstring + suffix;
 
 	std::fstream File_output;
-	File_output.open(fileName.toStdString(), std::fstream::out);
+	File_output.open(fileName, std::fstream::out);
 	File_output << "node attribute" << std::endl;
 
 	CompoundNode* root_display_layout = comb_tree_root_copy;
@@ -827,20 +815,20 @@ void LayoutExplorer::SetCompoundNodeLabel()
 
 void LayoutExplorer::SaveLayoutAsSvg()
 {
-	QString fileName = QFileDialog::getSaveFileName(this, "Save", "", "SVG (*.svg)");
+	// QString fileName = QFileDialog::getSaveFileName(this, "Save", "", "SVG (*.svg)");
 
-	if (fileName.length() > 0)
-	{
-		QSvgGenerator generator;
-		generator.setFileName(fileName);
-		generator.setSize(QSize(ui.output_widget->width(), ui.output_widget->height()));
-		generator.setViewBox(QRect(ui.output_widget->x(), ui.output_widget->y(), ui.output_widget->width(), ui.output_widget->height()));
-		generator.setTitle("SVG Generator Example Drawing");
-		QPainter painter;
-		painter.begin(&generator);
-		this->window()->render(&painter);
-		painter.end();
-	}
+	// if (fileName.length() > 0)
+	// {
+	// 	QSvgGenerator generator;
+	// 	generator.setFileName(fileName);
+	// 	generator.setSize(QSize(ui.output_widget->width(), ui.output_widget->height()));
+	// 	generator.setViewBox(QRect(ui.output_widget->x(), ui.output_widget->y(), ui.output_widget->width(), ui.output_widget->height()));
+	// 	generator.setTitle("SVG Generator Example Drawing");
+	// 	QPainter painter;
+	// 	painter.begin(&generator);
+	// 	this->window()->render(&painter);
+	// 	painter.end();
+	// }
 }
 
 void LayoutExplorer::CopyTree()

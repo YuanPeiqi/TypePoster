@@ -699,7 +699,7 @@ bool Transfer::EqualSizeRightTree(CompoundNode* Node)
 
 //void Transfer::SaveGenerLayout(CompoundNode* combine_tree_root, std::string fileName)
 //{
-//	//×¢Òâ£º±£´æÊ±Òª¶Ôindex½øÐÐÖØÐÂÅÅÁÐ
+//	//×¢ï¿½â£ºï¿½ï¿½ï¿½ï¿½Ê±Òªï¿½ï¿½indexï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //	std::vector<int> transfer_index;
 //	transfer_index.resize(200, 0);
 //	int index_counter = 1;
@@ -709,7 +709,7 @@ bool Transfer::EqualSizeRightTree(CompoundNode* Node)
 //	File_output.open(fileName, std::fstream::out);
 //	File_output << "node attribute" << std::endl;
 //
-//	//×¢ÒâµÃÓÃ²ã´Î±éÀúÊä³öÎÄ¼þ
+//	//×¢ï¿½ï¿½ï¿½ï¿½Ã²ï¿½Î±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 //	int node_number = 0, equal_size_number = 0, equal_space_number = 0, left_align_number = 0, right_align_number = 0, top_align_number = 0, bottom_align_number = 0;
 //
 //	if (combine_tree_root)

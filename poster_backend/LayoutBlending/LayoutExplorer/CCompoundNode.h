@@ -1,5 +1,6 @@
 #pragma once
 #include"CNode.h"
+#include <algorithm>
 
 enum OPERSTATE { CORRESED, DELETE };
 enum NODE_CORRES_TYPE { T_AB, A, B};	//A:first tree   B:second_tree

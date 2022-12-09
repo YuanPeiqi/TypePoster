@@ -1,38 +1,20 @@
 #pragma once
-
-#include <QtWidgets/QMainWindow>
-#include "ui_LayoutExplorer.h"
-
 #include <iostream>
-#include <Qdebug>
-#include "CSliderWidget.h"
-#include "COutputWidget.h"
-#include <qfiledialog.h>
-#include <Eigen/Core>
-#include <Eigen/Dense>
+#include "../../Eigen/Core"
+#include "../../Eigen/Dense"
 #include "CNodeMatching.h"
 #include "CLayoutTree.h"
 #include "CCompoundNode.h"
 #include "CCompoundTree.h"
-#include "qsvggenerator.h"
 #include "CTransfer.h"
-#include <QtCore/QObject>
-#include <QtGui/QtGui>
 
-class LayoutExplorer : public QMainWindow
+class LayoutExplorer
 {
-	Q_OBJECT
-
 public:
-	LayoutExplorer(QWidget *parent = Q_NULLPTR);
+	LayoutExplorer();
 	~LayoutExplorer();
-
-public slots:
-	void OutputWidgetRedraw();
-
 	//open each layout file
 	void OpenNextLayout();
-
 	void Compute();
 	void MovedAndCreate();
 	void SaveGenerLayout();
@@ -48,8 +30,6 @@ private:
 	int NodePresentTypeToInteger(CompoundNode* input_node);
 
 private:
-	Ui::LayoutExplorerClass ui;
-
 	Transfer layout_handler;
 	CLayoutTree* m_firstLayout;
 	CLayoutTree* m_secondLayout;

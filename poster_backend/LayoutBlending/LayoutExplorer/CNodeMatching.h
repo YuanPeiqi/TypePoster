@@ -6,6 +6,7 @@
 #include <set>
 #include <vector>
 #include <queue>
+#include <cmath>
 #include <unordered_map>
 #include "CCompoundNode.h"
 

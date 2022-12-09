@@ -14,7 +14,7 @@ public:
 	void SetCombineTreeRoot(CompoundNode* root_node);
 	void CalDeleteValue(CompoundNode* root_node);
 	void DeterInterVariable(double slider_value);
-	void TransferAndSolve(double slider_value);		//迁移关系并且求解
+	void TransferAndSolve(double slider_value);
 
 private:
 	void GetCombineTreeAttri();
@@ -37,6 +37,6 @@ private:
 
 private:
 	CompoundNode* root_combine_tree;
-	double layer_interval;		//记录树两层之间的间隔值
+	double layer_interval;
 	int combine_tree_height;
 };

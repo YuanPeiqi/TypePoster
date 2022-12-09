@@ -1,7 +1,8 @@
 #pragma once
-#include<regex>
-#include"CNode.h"
+#include <regex>
+#include "CNode.h"
 #include <assert.h>
+#include <algorithm>
 #include <unordered_map>
 
 class CLayoutTree
