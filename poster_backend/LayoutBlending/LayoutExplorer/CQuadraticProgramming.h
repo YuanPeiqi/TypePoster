@@ -2,8 +2,8 @@
 
 #include "CLayoutTree.h"
 #include "CCompoundNode.h"
-#include "../../Eigen/Core"
-#include "../../Eigen/Dense"
+#include "../Eigen/Core"
+#include "../Eigen/Dense"
 #include <queue>
 #include <unordered_map>
 #include <numeric>
