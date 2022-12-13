@@ -16,8 +16,8 @@ public:
 	//open each layout file
 	void OpenNextLayout(std::string fileName);
 	void Compute();
-	void MovedAndCreate();
-	void SaveGenerLayout();
+	void MovedAndCreate(double alpha);
+	void SaveGenerLayout(double alpha);
 	void SaveLayoutAsSvg();
 	void BatchCreateLay();
 
