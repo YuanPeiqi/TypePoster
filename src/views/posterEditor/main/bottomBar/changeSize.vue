@@ -38,6 +38,10 @@ export default {
       canvasHeight: (state) => state.canvasSize.height
     })
   },
+  created() {
+    this.width = this.canvasWidth
+    this.height = this.canvasHeight
+  },
   methods: {
     ...mapActions(['setCanvasSize', 'seekBackgroundSize']),
     save() {
@@ -47,10 +51,6 @@ export default {
       this.setCanvasSize({ width: this.width, height: this.height })
       this.seekBackgroundSize()
     }
-  },
-  created() {
-    this.width = this.canvasWidth
-    this.height = this.canvasHeight
   }
 }
 </script>

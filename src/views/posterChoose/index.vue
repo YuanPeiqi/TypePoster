@@ -25,7 +25,7 @@ export default {
             imgwrap: [
                 { url: 'public/test_poster/template2.png' },
                 { url: 'public/test_poster/template2.png' },
-                { url: 'public/test_poster/template2.png' }  //这里换url没成功，看一下是否换回最初的
+                { url: 'public/test_poster/template2.png' } // 这里换url没成功，看一下是否换回最初的
                 // { url: require('../../../template/template4.png') }
             ]
            // cur_bg: require(this.imgwrap[0].url)

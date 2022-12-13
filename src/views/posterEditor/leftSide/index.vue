@@ -28,7 +28,7 @@ import rectWidget from './widgets/rectWidget'
 import { mapActions } from 'poster/poster.vuex'
 import { BackgroundWidget } from 'poster/widgetConstructor'
 import { pluginMap, pluginWrap } from '../plugins'
-import posterWidget from "./widgets/posterWidget";
+import posterWidget from './widgets/posterWidget'
 
 // 注册插件
 const pluginWidgets = []
@@ -91,6 +91,10 @@ export default {
       ]
     }
   },
+  created() {
+    this.current = this.widgets[0]
+    this.init()
+  },
   methods: {
     ...mapActions(['addBackground']),
     init() {
@@ -102,10 +106,6 @@ export default {
         })
       )
     }
-  },
-  created() {
-    this.current = this.widgets[0]
-    this.init()
   }
 }
 </script>
