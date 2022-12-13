@@ -63,21 +63,21 @@
         <el-form-item label="线上会议号">
           <el-input v-model="form.meeting_num"></el-input>
         </el-form-item>
-        <el-form-item label="报告人照片" prop="photo">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            :on-exceed="handleExceed"
-            :file-list="fileList">
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传<b>jpg/png</b>文件，且不超过<b>500kb</b></div>
-          </el-upload>
-        </el-form-item>
+<!--        <el-form-item label="报告人照片" >-->
+<!--          <el-upload-->
+<!--            class="upload-demo"-->
+<!--            action="https://jsonplaceholder.typicode.com/posts/"-->
+<!--            :show-file-list="false"-->
+<!--            :on-success="handleAvatarSuccess"-->
+<!--            :before-upload="beforeAvatarSuccess"-->
+<!--            list-type="picture">-->
+<!--            <el-button size="small" type="primary">点击上传</el-button>-->
+<!--            <div slot="tip" class="el-upload__tip">只能上传<b>jpg/png</b>文件，且不超过<b>500kb</b></div>-->
+<!--          </el-upload>-->
+<!--        </el-form-item>-->
         <el-form-item>
         <el-button style="font-weight: bold;"
+                   :loading="loading"
                      icon="el-icon-magic-stick"
                      type="primary"
                      @click="submitForm('chineseForm')"
@@ -128,7 +128,7 @@
         <el-form-item label="Online">
           <el-input v-model="form.meeting_num"></el-input>
         </el-form-item>
-        <el-form-item label="Photo" prop="photo">
+        <el-form-item label="Photo" >
           <el-upload
             action="https://jsonplaceholder.typicode.com/posts/"
             :on-preview="handlePreview"
@@ -157,13 +157,31 @@
 <script>
 /* eslint-disable */
 import axios from 'axios'
+let checkIntro = (rule, value, callback) => {
+      let word = ['千人计划', '长江学者']
+        if (!value) {
+          return callback(new Error('介绍不能为空'));
+        }
+        setTimeout(() => {
+          for (let i in word) {
+            console.log(value.includes(word[i]));
+             if (value.includes(word[i])) {
+               callback(new Error('不能包含敏感词'+ word[i]));
+            }
+           }
+          callback();
+        }, 200);
+    };
 export default {
   data() {
     return {
+      // sensitiveWordNotice: false,
+      loading:false,
       language: true,
       chineseLocation: ['第一科研楼报告厅', '图书馆102会议室'],
       englishLocation: ['Lecture Hall of 1st Scientific Research Building', 'Conference Room 102, Library'],
       form: {
+        userid:'user1',
         title: '',
         location: '',
         time: '',
@@ -176,69 +194,93 @@ export default {
       },
       chineseRules: {
         title: [
-          { required: true, message: '请输入报告主题', trigger: 'blur' }
+          {required: true, message: '请输入报告主题', trigger: 'blur'}
         ],
         location: [
-          { required: true, message: '请选择报告地点', trigger: 'change' }
+          {required: true, message: '请选择报告地点', trigger: 'change'}
         ],
         time: [
-          { required: true, message: '请选择报告时间', trigger: 'blur' }
+          {required: true, message: '请选择报告时间', trigger: 'blur'}
         ],
         reporter: [
-          { required: true, message: '请填写报告人姓名', trigger: 'blur' }
+          {required: true, message: '请填写报告人姓名', trigger: 'blur'}
         ],
         abstract: [
-          { required: true, message: '请填写报告摘要', trigger: 'blur' }
+          {required: true, message: '请填写报告摘要', trigger: 'blur'}
         ],
         introduction: [
-          { required: true, message: '请填写报告人简介', trigger: 'blur' }
+          {validator: checkIntro, trigger: 'blur'},
         ],
-        photo: [
-          { required: true, message: '请上传报告人照片', trigger: 'change' }
-        ]
+        // photo: [
+        //   {required: true, message: '请上传报告人照片', trigger: 'change'}
+        // ]
       },
       englishRules: {
         title: [
-          { required: true, message: 'Please enter the title', trigger: 'blur' }
+          {required: true, message: 'Please enter the title', trigger: 'blur'}
         ],
         location: [
-          { required: true, message: 'Please choose a location', trigger: 'change' }
+          {required: true, message: 'Please choose a location', trigger: 'change'}
         ],
         time: [
-          { required: true, message: 'Please choose the report time', trigger: 'blur' }
+          {required: true, message: 'Please choose the report time', trigger: 'blur'}
         ],
         reporter: [
-          { required: true, message: 'Please enter the reporter\'s name', trigger: 'blur' }
+          {required: true, message: 'Please enter the reporter\'s name', trigger: 'blur'}
         ],
         abstract: [
-          { required: true, message: 'Please enter the abstraction', trigger: 'blur' }
+          {required: true, message: 'Please enter the abstraction', trigger: 'blur'}
         ],
         introduction: [
-          { required: true, message: 'Please enter the introduction to reporter', trigger: 'blur' }
+          {required: true, message: 'Please enter the introduction to reporter', trigger: 'blur'}
         ],
         photo: [
-          { required: true, message: 'Please upload the photo', trigger: 'change' }
+          {required: true, message: 'Please upload the photo', trigger: 'change'}
         ]
       }
     }
   },
   methods: {
     submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            this.$router.push('editor')
-            console.log(this.form)
-            axios.get('http://localhost:5000/submit_poster_info', {
-              params: this.form
-            }).then((resp) => {
-              console.log(resp.data)
-            })
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
+      if (this.form.time !== '' || this.form.time !== null) {
+        const timeData = `${this.form.time[0]} - ${this.form.time[1]}`
+        this.form.time = timeData
+      } else {
+        this.form.time = '0-0'
+      }
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.loading=true;
+          this.$router.push('editor')
+          console.log(this.form)
+          axios.get('http://localhost:5000/submit_poster_info', {
+            params: this.form
+          }).then((resp) => {
+            console.log(resp.data)
+          })
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    handleAvatarSuccess(res,file) {
+      this.form.photo=URL.createObjectURL(file.raw);
+    },
+    beforeAvatarSuccess(file) {
+      //验证图片格式大小信息
+      console.log(file)
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLt2M = file.size / 1024 / 1024 < 2;
+      if (!isJPG) {
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传图片大小不能超过 2MB!');
+      }
+      //图片格式大小信息没问题 执行上传图片的方法
+      return isJPG && isLt2M;
+    }
   }
 }
 </script>
