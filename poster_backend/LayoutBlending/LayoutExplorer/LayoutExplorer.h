@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
-#include "../../Eigen/Core"
-#include "../../Eigen/Dense"
+#include "../Eigen/Core"
+#include "../Eigen/Dense"
 #include "CNodeMatching.h"
 #include "CLayoutTree.h"
 #include "CCompoundNode.h"
@@ -14,10 +14,10 @@ public:
 	LayoutExplorer();
 	~LayoutExplorer();
 	//open each layout file
-	void OpenNextLayout();
+	void OpenNextLayout(std::string fileName);
 	void Compute();
-	void MovedAndCreate();
-	void SaveGenerLayout();
+	void MovedAndCreate(double alpha);
+	void SaveGenerLayout(double alpha);
 	void SaveLayoutAsSvg();
 	void BatchCreateLay();
 

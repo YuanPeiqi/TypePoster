@@ -125,6 +125,7 @@ void CLayoutTree::ReadFromFile(std::string fileName)
 
 	std::ifstream infile;
 	infile.open(fileName.data());
+    std::cout << fileName.data() << std::endl;
 	assert(infile.is_open());
 
 	int nodes_number = 0;

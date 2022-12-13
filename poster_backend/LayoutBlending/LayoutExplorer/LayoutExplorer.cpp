@@ -41,7 +41,7 @@ LayoutExplorer::~LayoutExplorer()
 		combine_tree_copy = nullptr;
 	}
 }
-void LayoutExplorer::OpenNextLayout()
+void LayoutExplorer::OpenNextLayout(std::string fileName)
 {
 	// static const QString defaultPath("DEFAULT_LAYOUT_FILE_PATH");
 	// QSettings thisSetting;
@@ -50,7 +50,8 @@ void LayoutExplorer::OpenNextLayout()
 
 	// QString file_name = QFileDialog::getOpenFileName(this, tr("Open layout"), path, filter);
 	// std::string fileName = file_name.toStdString();
-	std::string fileName = ".\\TestData\\183_layout.lay";
+//	std::string fileName = ".\\TestData\\183_layout.lay";
+    std::cout << fileName << std::endl;
 	if (fileName.length() > 0)
 	{
 		if (m_uploadLayout.size() == 2)
@@ -109,7 +110,7 @@ void LayoutExplorer::Compute()
 	}
 }
 
-void LayoutExplorer::MovedAndCreate()
+void LayoutExplorer::MovedAndCreate(double alpha)
 {
 	if (comb_tree_root == nullptr)
 	{
@@ -118,8 +119,8 @@ void LayoutExplorer::MovedAndCreate()
 
 	CopyTree();
 	// ui.horizontalSlider->value() = 0.25
-	DeterInterVar(0.25);
-	layout_handler.TransferAndSolve(0.25);
+	DeterInterVar(alpha);
+	layout_handler.TransferAndSolve(alpha);
 	SetCompoundNodeLabel();
 
 	// ui.output_widget->draw_layout_state = true;
@@ -167,16 +168,13 @@ void LayoutExplorer::BatchCreateLay()
 	return;
 }
 
-void LayoutExplorer::SaveGenerLayout()
+void LayoutExplorer::SaveGenerLayout(double alpha)
 {
 	std::vector<int> transfer_index;
 
 	transfer_index.resize(500, 0);
 	int index_counter = 1;
-
-	string fileName;
-	// fileName = QFileDialog::getSaveFileName(this, "Save", "", "Lay (*.lay)");
-	fileName = ".\\TestResult\\res.lay";
+    string fileName = "..\\TestResult\\" + to_string(alpha) + "res.lay";
 	std::fstream File_output;
 	File_output.open(fileName, std::fstream::out);
 	File_output << "node attribute" << std::endl;
