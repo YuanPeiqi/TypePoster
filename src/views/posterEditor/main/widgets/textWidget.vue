@@ -6,7 +6,7 @@
       class="text-container"
       contenteditable="false"
       :style="textStyle"
-      v-html="text"
+      v-html="highlightSensitiveWords(text)"
     >
       {{ text }}
     </div>
@@ -18,7 +18,7 @@
       class="text-container editing"
       contenteditable="true"
       :style="textStyle"
-      v-html="text"
+      v-html="highlightSensitiveWords(text)"
     >
       {{ text }}
     </div>
@@ -40,7 +40,8 @@ export default {
   mixins: [TextWidget.widgetMixin()],
   data() {
     return {
-      isEditing: false
+      isEditing: false,
+      sensitiveWords: ['长江学者', '千人计划']
     }
   },
   computed: {
@@ -77,6 +78,18 @@ export default {
     getMenuList() {
       return []
     },
+    highlightSensitiveWords(text) {
+      // 清空所有的红色高亮
+      ['<font style="text-decoration: red wavy underline;">', '</font>'].map(function(item) {
+        const reg = new RegExp(item, 'g')
+        text = text.replace(reg, '')
+      })
+      this.sensitiveWords.map(function(item) {
+        const reg = new RegExp(item, 'g')
+        text = text.replace(reg, '<font style="text-decoration: red wavy underline;">' + item + '</font>')
+      })
+      return text
+    },
     openEditing() {
       this.isEditing = true
       this.$nextTick(() => {
@@ -112,8 +125,10 @@ export default {
     margin: 10px;
     width: calc(100% - 20px);
     height: calc(100% - 20px);
-    white-space: wrap;
-    word-break: break-all;
+    // TODO: 如有bug记得看这里
+    word-break: keep-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
     &.editing {
       position: relative;
     }

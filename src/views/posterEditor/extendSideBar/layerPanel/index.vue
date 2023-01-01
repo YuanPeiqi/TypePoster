@@ -66,11 +66,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .layer-panel {
-  width: 220px;
+  width: 254px;
   height: 460px;
   background-color: #1d2024;
   position: fixed;
-  right: 252px;
+  right: 254px;
   top: 60px;
   box-shadow: 0 0 6px rgba($color: #000000, $alpha: 0.1);
   color: #fff;

@@ -1,16 +1,22 @@
 #include "LayoutExplorer.h"
+#include <string>
+#include<vector>
 #include <iostream>
+
+using namespace std;
 
 int main(int argc, char *argv[])
 {
-    std::cout << "Initialize LayoutExplorer" << std::endl;
+    cout << argv[0] << argv[1] << endl;
+    assert(argc == 3);
+    cout << "Initialize LayoutExplorer" << endl;
     LayoutExplorer le;
-    std::string fileName0 = "..\\TestData\\template0.lay";
-    std::string fileName1 = "..\\TestData\\template1.lay";
+    string fileName0 = argv[1];
+    string fileName1 = argv[2];
     le.OpenNextLayout(fileName0);
     le.OpenNextLayout(fileName1);
     le.Compute();
-    std::vector<double> input_coefficient = { 0.0,0.25,0.5,0.75,1.0 };
+    vector<double> input_coefficient = { 0.0, 0.25, 0.5, 0.75, 1.0 };
     for (int i = 0; i < input_coefficient.size(); i++)
     {
         double alpha = input_coefficient[i];

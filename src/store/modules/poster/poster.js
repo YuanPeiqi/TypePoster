@@ -100,6 +100,10 @@ const mutations = {
         }
         state.posterItems = state.posterItems.filter(i => i.id !== item.id)
     },
+    // 清空所有组件
+    [MTS.REMOVE_ALL_ITEMS](state) {
+        state.posterItems = []
+    },
     // 替换所有items
     [MTS.REPLACE_POSTER_ITEMS](state, items) {
         state.posterItems = items
@@ -130,6 +134,10 @@ const mutations = {
     // 替换辅助组件
     [MTS.REPLACE_ASSIST_WIDGETS](state, items) {
         state.assistWidgets = items
+    },
+    // 清空画布上所有的组件
+    [MTS.REMOVE_ALL_ASSIST_WIDGETS](state) {
+        state.assistWidgets = []
     },
     // 设置图层面板的打开关闭状态
     [MTS.SET_LAYER_PANEL](state, flag) {
@@ -220,6 +228,7 @@ const actions = {
         commit(MTS.ADD_BACKGROUND, item)
     },
     removeBackground({ commit, dispatch }) {
+        console.log('清空背景')
         dispatch('history/push')
         commit(MTS.REMOVE_BACKGROUND)
     },
@@ -261,6 +270,10 @@ const actions = {
         dispatch('history/push')
         commit(MTS.REMOVE_ITEM, item)
     },
+    removeAllItems({ commit }) {
+        console.log('清空所有元素')
+        commit(MTS.REMOVE_ALL_ITEMS)
+    },
     replacePosterItems({ commit, dispatch }, items) {
         dispatch('history/push')
         commit(MTS.REPLACE_POSTER_ITEMS, items)
@@ -289,6 +302,11 @@ const actions = {
     replaceAssistWidgets({ commit }, items) {
         // dispatch('history/push')
         commit(MTS.REPLACE_ASSIST_WIDGETS, items)
+    },
+    removeAllAssistWidgets({ commit }) {
+        // dispatch('history/push')
+        console.log('清空所有组件')
+        commit(MTS.REMOVE_ALL_ASSIST_WIDGETS)
     },
     selectAllItems({ commit, state }) {
         commit(MTS.REPLACE_ACTIVE_ITEMS, state.posterItems)

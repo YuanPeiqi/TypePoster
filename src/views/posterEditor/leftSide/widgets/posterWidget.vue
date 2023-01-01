@@ -1,48 +1,102 @@
 <!-- eslint-disable -->
 <template>
-  <div class="add-image-widget">
-    <div style="margin-left: 15px; font-weight: bold">选择模板</div>
-    <el-row>
-      <draggable :animation='300' ghostClass="ghost">
-        <transition-group>
-          <el-col v-for="(poster, index) in this.poster_list" :key="poster" :offset="1" :span="11">
-            <el-card body-style="padding: 3px" shadow="hover" style="margin-top: 20px">
+  <div style="height: 100%; width: 100%">
+    <el-dialog
+        :modal-append-to-body='false'
+        :visible.sync="blendDialogVisible"
+        center
+        title="模板混合"
+        width="30%">
+      <div style="width: 100%; height: 600px; display: flex; justify-content: center; align-items: center;">
+        <div style="background-color: black; width: 80%; height: 600px;">
+          hh
+        </div>
+      </div>
+      <div style="width: 100%; height: 60px; display: flex; justify-content: center; align-items: center;">
+        <el-slider
+            v-model="alpha"
+            :step="25"
+            show-stops
+            style="width: 60%">
+        </el-slider>
+      </div>
+      <div style="width: 100%; height: 60px; display: flex; justify-content: center; align-items: center;">
+        <el-button @click="blendDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="blendDialogVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+    <div style="margin-left: 15px; margin-top: 15px; font-weight: bold">选择模板</div>
+    <div class="poster-choose-widget">
+      <el-row>
+        <draggable v-model="poster_list" :options="posterOptions" style="padding: 2%">
+          <el-col v-for="(poster, index) in this.poster_list" :key="poster.id" :span="12">
+            <el-card body-style="padding: 3px" shadow="hover" style="width: 150px; margin: 5px 5px">
               <div :style="{backgroundImage: 'url(' + poster.preview + ')'}"
-                   class="middle"
+                   class="poster-view"
                    @mouseenter="mouseenter(index)"
-                   @mouseleave="mouseleave(index)">
+                   @mouseleave="mouseleave(index)"
+              >
                 <transition name="plus-icon">
                   <div v-if="poster.hover" class="poster_title">{{ poster.description }}</div>
                 </transition>
                 <transition name="plus-icon">
                   <div v-if="poster.hover" class="poster_mask">
                     <div class="close_button">
-                      <el-button v-if="poster.hover" circle icon="el-icon-close" size="mini"></el-button>
+                      <el-button v-if="poster.hover" circle icon="el-icon-close" size="mini" @click="removeTemplate(index)"></el-button>
                     </div>
                     <div class="choose_button">
-                      <el-button v-if="poster.hover" circle icon="el-icon-s-promotion" size="mini"
-                                 @click="chooseTemplate(index)"
-                      ></el-button>
+                      <el-button v-if="poster.hover" circle icon="el-icon-s-promotion" size="mini" @click="chooseTemplate(index)"></el-button>
                     </div>
                   </div>
                 </transition>
               </div>
             </el-card>
           </el-col>
-        </transition-group>
-      </draggable>
-    </el-row>
+        </draggable>
+      </el-row>
+    </div>
+    <div style="padding: 15px; font-weight: bold; position: relative">请选择两套模板
+      <el-button round size="mini"
+                 style="font-weight: bold; font-size: 15px; position: absolute; background-color: #dcdee0;
+                 color: #54616c; border-color: #dcdee0; vertical-align: middle; right: 15px; top: 8px"
+                 @click="blendTemplate">
+        混合
+      </el-button>
+    </div>
+    <div style="height: calc(28% - 78px); width: 100%; display: flex;">
+      <div style="height: 100%; width: 50%; background: rgba(212,212,212,0.34); padding: 2%">
+        <draggable v-model="blender1" :options="blenderOptions" style="height: 100%; width: 100%; border: 3px dashed #9099a4;
+                        border-radius: 4px; display: flex; padding: 1%; overflow: hidden"
+                   @change="blender1.splice(1)">
+          <el-card v-for="poster in this.blender1" :key="poster.id"
+                   body-style="padding: 3px" shadow="hover" style="height: 195px; min-width: 100%">
+            <div :style="{backgroundImage: 'url(' + poster.preview + ')'}"
+                 class="poster-view"
+            ></div>
+          </el-card>
+        </draggable>
+      </div>
+      <div style="height: 100%; width: 50%; background: rgba(212,212,212,0.34); padding: 2%">
+        <draggable v-model="blender2" :options="blenderOptions" style="height: 100%; width: 100%; border: 3px dashed #9099a4;
+                        border-radius: 4px; display: flex; padding: 1%; overflow: hidden"
+                   @change="blender2.splice(1)">
+          <el-card v-for="poster in this.blender2" :key="poster.id"
+                   body-style="padding: 3px" shadow="hover" style="height: 195px; min-width: 100%">
+            <div :style="{backgroundImage: 'url(' + poster.preview + ')'}"
+                 class="poster-view"
+            ></div>
+          </el-card>
+        </draggable>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
 import {mapActions} from 'poster/poster.vuex'
-import {RectWidget, ImageWidget, BackgroundWidget, TextWidget} from '../../widgetConstructor'
+import {BackgroundWidget, ImageWidget, RectWidget, TextWidget} from '../../widgetConstructor'
 import draggable from "vuedraggable";
-import {validateImage} from '@/utils/imageHelpers'
-import {uploadActivityImgAssets} from '@/api/activity'
-import axios from "axios";
 
 export default {
   components: {
@@ -50,236 +104,29 @@ export default {
   },
   data() {
     return {
-      poster_list: [
-        {
-          preview: "http://localhost:5000/get_poster_view/template0.png",
-          description: '模板1',
-          hover: false,
-          data: [
-            {type: "background", opacity: 0.5, url: "http://localhost:5000/get_image/bg.png"},
-            {type: "rect", backgroundColor: '#FFFFFF', opacity: 0.6, w: 646, h: 427, x: 17, y: 463},
-            {type: "rect", backgroundColor: '#FFFFFF', opacity: 0.6, w: 485, h: 212, x: 178, y: 213},
-            {type: "rect", backgroundColor: '#000000', opacity: 1, w: 612, h: 4, x: 34, y: 671},
-            {type: "img", url: "http://localhost:5000/get_image/department_logo.png", w: 265, h: 55, x: 390, y: 17},
-            {type: "img", url: "http://localhost:5000/get_image/school_logo.png", w: 212, h: 55, x: 17, y: 17},
-            {type: "img", url: "http://localhost:5000/get_image/photo.png", w: 140, h: 212, x: 17, y: 214},
-            {type: "img", url: "http://localhost:5000/get_image/qrcode.png", w: 106, h: 106, x: 542, y: 300},
-            {
-              type: "text", content: "文字到海报的端到端生成, 测试一下文字长度会不会超出海报",
-              font: {
-                fontSize: '32px',
-                color: '#2D5960',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '158%'
-              },
-              w: 560, h: 120, x: 60, y: 76
-            },
-            {
-              type: "text", content: "时间:",
-              font: {
-                fontSize: '18px',
-                color: '#2D5960',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 70, h: 35, x: 184, y: 225
-            },
-            {
-              type: "text", content: "2022年11月16日(周三) 9:30-11:30",
-              font: {
-                fontSize: '18px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 295, h: 35, x: 238, y: 225
-            },
-            {
-              type: "text", content: "地点:",
-              font: {
-                fontSize: '18px',
-                color: '#2D5960',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 70, h: 35, x: 184, y: 260
-            },
-            {
-              type: "text", content: "第一科研楼报告厅",
-              font: {
-                fontSize: '18px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 166, h: 35, x: 238, y: 260
-            },
-            {
-              type: "text", content: "报告人:",
-              font: {
-                fontSize: '18px',
-                color: '#2D5960',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 80, h: 35, x: 184, y: 295
-            },
-            {
-              type: "text", content: "陈明 副教授/杜克大学",
-              font: {
-                fontSize: '18px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 200, h: 35, x: 256, y: 295
-            },
-            {
-              type: "text", content: "邀请人:",
-              font: {
-                fontSize: '18px',
-                color: '#2D5960',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 80, h: 35, x: 184, y: 330
-            },
-            {
-              type: "text", content: "原佩琦 学术垃圾/南方科技大学",
-              font: {
-                fontSize: '18px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 270, h: 35, x: 256, y: 330
-            },
-            {
-              type: "text", content: "腾讯会议号:",
-              font: {
-                fontSize: '18px',
-                color: '#2D5960',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 116, h: 35, x: 184, y: 365
-            },
-            {
-              type: "text", content: "123-456-789",
-              font: {
-                fontSize: '18px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 200, h: 35, x: 290, y: 365
-            },
-            {
-              type: "text", content: "Abstract:",
-              font: {
-                fontSize: '19px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '100%'
-              },
-              w: 118, h: 50, x: 25, y: 465
-            },
-            {
-              type: "text", content: "About the speaker:",
-              font: {
-                fontSize: '19px',
-                color: '#000000',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '158%'
-              },
-              w: 208, h: 50, x: 25, y: 678
-            },
-            {
-              type: "text",
-              content: "We present a novel method for blending hierarchical layouts with semantic labels. The core of our method is a hierarchical structure correspondence algorithm, which recursively finds optimal substructure correspondences, achieving a globally optimal correspondence between a pair of hierarchical layouts. This correspondence is consistent with the structures of both layouts, allowing us to define the union of the layouts’ structures. The resulting compound structure helps extract intermediate layout structures, from which blended layouts can be generated via an optimization approach.",
-              font: {
-                fontSize: '16px',
-                fontFamily: '"Times New Roman",Georgia,Serif',
-                color: '#595959',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '135%'
-              },
-              w: 625,
-              h: 170,
-              x: 26,
-              y: 489
-            },
-            {
-              type: "text",
-              content: "We present a novel method for blending hierarchical layouts with semantic labels. The core of our method is a hierarchical structure correspondence algorithm, which recursively finds optimal substructure correspondences, achieving a globally optimal correspondence between a pair of hierarchical layouts. This correspondence is consistent with the structures of both layouts, allowing us to define the union of the layouts’ structures. The resulting compound structure helps extract intermediate layout structures, from which blended layouts can be generated via an optimization approach.",
-              font: {
-                fontSize: '16px',
-                fontFamily: '"Times New Roman",Georgia,Serif',
-                color: '#595959',
-                fontWeight: 'bold',
-                textAlign: 'left',
-                fontStyle: '',
-                letterSpacing: 0,
-                lineHeight: '135%'
-              },
-              w: 625,
-              h: 170,
-              x: 26,
-              y: 708
-            },
-          ]
-        },
-        {preview: "http://localhost:5000/get_poster_view/template1.png", description: '模板2', hover: false, data: []},
-        {preview: "http://localhost:5000/get_poster_view/template2.png", description: '模板3', hover: false, data: []},
-        {preview: "http://localhost:5000/get_poster_view/template3.png", description: '模板4', hover: false, data: []},
-        {preview: "http://localhost:5000/get_poster_view/template4.png", description: '模板4', hover: false, data: []}]
+      user: 'test_user',
+      blendDialogVisible: false,
+      alpha: 0,
+      poster_list: this.$store.state.poster_list,
+      blender1: [],
+      blender2: [],
+      posterOptions: {
+        group: {name: 'poster', pull: 'clone', put: false},
+        animation: 300,
+        ghostClass: "ghost",
+      },
+      blenderOptions: {
+        group: {name: 'blender', pull: 'clone', put: true},
+        ghostClass: "ghost",
+      },
     }
   },
   methods: {
-    ...mapActions(['addItem', 'addAssistWidget', 'addBackground']),
+    ...mapActions(['addItem', 'addAssistWidget', 'addBackground', 'removeAllAssistWidgets', 'removeBackground', 'removeAllItems']),
     renderPoster(index) {
+      this.removeAllAssistWidgets()
+      this.removeAllItems()
+      this.removeBackground()
       let poster_data = this.poster_list[index].data
       for (let i = 0; i < poster_data.length; i++) {
         if (poster_data[i].type === "background") {
@@ -315,7 +162,7 @@ export default {
           temp_rect.wState.style.backgroundColor = poster_data[i].backgroundColor
           temp_rect.wState.style.opacity = poster_data[i].opacity
           this.addItem(temp_rect)
-        } else if (poster_data[i].type === "text") {
+        } else if (poster_data[i].type === "text" || poster_data[i].type === "title") {
           let temp_text = new TextWidget(
               {
                 wState: {
@@ -327,7 +174,6 @@ export default {
           temp_text.dragInfo.h = poster_data[i].h
           temp_text.dragInfo.x = poster_data[i].x
           temp_text.dragInfo.y = poster_data[i].y
-          // console.log(temp_text)
           temp_text.isCopied = true
           this.addItem(temp_text)
         }
@@ -378,24 +224,53 @@ export default {
           message: action === 'cancel' ? '已取消' : '渲染海报出错，请选择其它模板'
         });
       });
+    },
+    removeTemplate(index) {
+      this.$confirm(`确认移除 "${this.poster_list[index].description}" 吗`, '移除海报模板', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'info'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: `成功移除 "${this.poster_list[index].description}"`
+        });
+        this.poster_list = this.poster_list.filter(i => i.id !== this.poster_list[index].id)
+      }).catch(action => {
+        this.$message({
+          type: action === 'cancel' ? 'info' : 'error',
+          message: action === 'cancel' ? '已取消' : '移除海报出错，请重新操作'
+        });
+      });
+    },
+    blendTemplate() {
+      this.blendDialogVisible = true;
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-.add-image-widget {
+.poster-choose-widget {
   width: 100%;
+  height: 72%;
   box-sizing: border-box;
-  padding-right: 15px;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  overflow-y: auto;
 
   .add-image {
     width: 100%;
   }
 }
 
-.middle {
+.blender {
+  border: 3px dashed #9099a4;
+  border-radius: 4px;
+  width: 48%;
+  height: 190px;
+  background: white no-repeat center top;
+  background-size: contain;
+}
+
+.poster-view {
   height: 187px;
   width: 100%;
   background: no-repeat center top;
