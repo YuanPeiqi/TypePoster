@@ -4,9 +4,8 @@
 #include <set>
 
 enum NODE_TYPE { LEAF, NONLEAF };
-enum EQUAL_SPACE_MODE { HORIZONTAL, VERTICAL};
-enum NODE_PRESENT_TYPE { PICTURE, TEXT, PADDING, NONLABEL, TITLE};
-
+enum EQUAL_SPACE_MODE { HORIZONTAL, VERTICAL };
+enum NODE_PRESENT_TYPE { NONLABEL, PADDING, TITLE, ABSTRACT, INTRODUCTION, INFO, LOGO, PHOTO };
 struct EqualSpace
 {
 	std::vector<int> node_index;
@@ -17,7 +16,7 @@ class CNode
 {
 public:
 	CNode(int index_, NODE_TYPE node_type_,  int x_, int y_, int width_, int height_) : index(index_), node_type(node_type_),
-		x(x_), y(y_), width(width_), height(height_),parent(nullptr) {};
+		x(x_), y(y_), width(width_), height(height_), parent(nullptr) {};
 
 	//~CNode();
 

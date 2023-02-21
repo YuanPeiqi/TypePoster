@@ -168,13 +168,13 @@ void LayoutExplorer::BatchCreateLay()
 	return;
 }
 
-void LayoutExplorer::SaveGenerLayout(double alpha)
+void LayoutExplorer::SaveGenerLayout(double alpha, string outPath)
 {
 	std::vector<int> transfer_index;
 
 	transfer_index.resize(500, 0);
 	int index_counter = 1;
-    string fileName = "..\\TestResult\\" + to_string(alpha) + "res.lay";
+    string fileName = outPath + to_string(alpha) + ".lay";
 	std::fstream File_output;
 	File_output.open(fileName, std::fstream::out);
 	File_output << "node attribute" << std::endl;
@@ -466,21 +466,33 @@ int LayoutExplorer::NodePresentTypeToInteger(CompoundNode * input_node)
 	{
 		return 0;
 	}
-	else if (input_node->node_present_type == NODE_PRESENT_TYPE::PICTURE)
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::PADDING)
 	{
 		return 1;
 	}
-	else if (input_node->node_present_type == NODE_PRESENT_TYPE::TEXT)
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::TITLE)
 	{
 		return 2;
 	}
-	else if (input_node->node_present_type == NODE_PRESENT_TYPE::PADDING)
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::ABSTRACT)
 	{
 		return 3;
 	}
-	else if (input_node->node_present_type == NODE_PRESENT_TYPE::TITLE)
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::INTRODUCTION)
 	{
 		return 4;
+	}
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::INFO)
+	{
+		return 5;
+	}
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::LOGO)
+	{
+		return 6;
+	}
+	else if (input_node->node_present_type == NODE_PRESENT_TYPE::PHOTO)
+	{
+		return 7;
 	}
 	else
 	{

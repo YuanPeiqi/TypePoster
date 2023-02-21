@@ -364,19 +364,31 @@ NODE_PRESENT_TYPE CLayoutTree::SetNodePresentType(int flag)
 	}
 	else if (flag == 1)
 	{
-		return NODE_PRESENT_TYPE::PICTURE;
+		return NODE_PRESENT_TYPE::PADDING;
 	}
 	else if (flag == 2)
 	{
-		return NODE_PRESENT_TYPE::TEXT;
+		return NODE_PRESENT_TYPE::TITLE;
 	}
 	else if (flag == 3)
 	{
-		return NODE_PRESENT_TYPE::PADDING;
+		return NODE_PRESENT_TYPE::ABSTRACT;
 	}
 	else if (flag == 4)
 	{
-		return NODE_PRESENT_TYPE::TITLE;
+		return NODE_PRESENT_TYPE::INTRODUCTION;
+	}
+	else if (flag == 5)
+	{
+		return NODE_PRESENT_TYPE::INFO;
+	}
+	else if (flag == 6)
+	{
+		return NODE_PRESENT_TYPE::LOGO;
+	}
+	else if (flag == 7)
+	{
+		return NODE_PRESENT_TYPE::PHOTO;
 	}
 	else
 	{

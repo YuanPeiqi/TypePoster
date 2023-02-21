@@ -1,5 +1,6 @@
 // import html2canvas from 'html2canvas'
 import html2canvas from './html2canvas.min'
+import axios from 'axios'
 
 /**
  * 获取随机字符串
@@ -169,6 +170,45 @@ export function domToImg(dom, options = {}) {
                     _img.src = url
                     document.body.removeChild(dom)
                     resolve(_img)
+                })
+                .catch(err => {
+                    console.log(err)
+                    document.body.removeChild(dom)
+                    reject()
+                })
+        } catch (e) {
+            console.log(e)
+            reject()
+        }
+    })
+}
+
+export function domToImgAndSave(dom, options = {}) {
+    return new Promise((resolve, reject) => {
+        const baseOptions = {
+            width: 0,
+            height: 0
+        }
+        options = Object.assign({}, baseOptions, options)
+        const { width, height } = options
+        try {
+            document.body.appendChild(dom)
+            html2canvas(dom, {
+                width: width,
+                height: height,
+                // dpi: 192,
+                scale: 2
+            })
+                .then(canvas => {
+                    const url = canvas.toDataURL()
+                    const _img = document.createElement('img')
+                    _img.width = width
+                    _img.height = height
+                    _img.src = url
+                    document.body.removeChild(dom)
+                    axios.post('http://localhost:5000/save_preview', { url: url.split(',')[1] }).then((resp) => {
+                        resolve(resp.data)
+                    })
                 })
                 .catch(err => {
                     console.log(err)

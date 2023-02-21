@@ -37,16 +37,23 @@ const store = new Vuex.Store({
             }]
         },
         info_form: [],
-        poster_list: []
+        poster_list: [],
+        blending_list: []
     },
     mutations: {
         setPosterList(state, value) {
             state.poster_list = value
+        },
+        setBlendingList(state, value) {
+            state.blending_list = value
         }
     },
     actions: {
         setPosterList(context) {
             context.commit('setPosterList')
+        },
+        setBlendingList(context) {
+            context.commit('setBlendingList')
         }
     },
     getters,

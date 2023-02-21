@@ -10,13 +10,17 @@ import '@/styles/element-variables.scss'
 
 import VueAddition from '@/addition'
 import PortalVue from 'portal-vue'
+import hevueImgPreview from 'hevue-img-preview'
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 Vue.use(VueAddition)
 Vue.use(PortalVue)
-
+Vue.use(hevueImgPreview, {
+  keyboard: true,
+  clickMaskCLose: true
+})
 new Vue({
   router,
   store,

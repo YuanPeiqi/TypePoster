@@ -1,23 +1,31 @@
 import warnings
-
+import copy
 import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
-font = {'bold': 'C:\\Windows\\Fonts\\msyhbd.ttc', 'normal': 'C:\\Windows\\Fonts\\msyh.ttc'}
+font_path_global = {'bold': 'C:\\Windows\\Fonts\\msyhbd.ttc', 'normal': 'C:\\Windows\\Fonts\\msyh.ttc'}
+font_family = {
+    'info': {'fontSize': '0px', 'color': '#000000', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
+             'letterSpacing': 0, 'lineHeight': '100%'},
+    'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
+                   'letterSpacing': 0, 'lineHeight': '100%'},
+    'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#595959', 'fontWeight': 'bold',
+                 'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+    'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#000000', 'fontWeight': 'bold',
+                       'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'}}
 font_shift = 10
+English2Chinese = {'time': '时间:', 'location': '地点:', 'reporter': '报告人:', 'inviter': '邀请人:', 'meeting_num': '腾讯会议号:', 'abstract': '报告摘要', 'introduction': '报告人简介'}
 warnings.filterwarnings("ignore")
 
 
 class Poster:
-    def __init__(self, title, time, location, reporter, inviter, meeting_num, abstract, introduction,
+    def __init__(self, title='', abstract='', introduction='', info_list=None,
                  canvas_width=680,
                  canvas_height=907,
-                 photo_path='static/images/test_user/photo.png',
-                 bg_path='static/images/test_user/bg.png',
-                 logo_1_path='static/images/test_user/school_logo.png',
-                 logo_2_path='static/images/test_user/department_logo.png',
-                 qrcode_path='static/images/test_user/qrcode.png'):
+                 photo_url='',
+                 logo_url='',
+                 qrcode_url=''):
         """
         :param title: 报告主题
         :param time: 报告举办时间
@@ -33,251 +41,105 @@ class Poster:
         :param logo_2_path: 系标识/讲堂标识
         """
         # 获取海报信息, 读取图像元素, 初始化海报面板
-        self._bg = scale(cv2.imread(bg_path, cv2.IMREAD_UNCHANGED), canvas_width, canvas_height)
-        self._logo_1 = cv2.imread(logo_1_path, cv2.IMREAD_UNCHANGED)
-        self._logo_2 = cv2.imread(logo_2_path, cv2.IMREAD_UNCHANGED)
-        self._qrcode = scale(cv2.imread(qrcode_path, cv2.IMREAD_UNCHANGED), 300, 300)
+        if info_list is None:
+            info_list = {'time': '', 'location': '', 'reporter': ''}
+        if not photo_url:
+            photo_url = 'http://localhost:5000/get_image/test_user/user_photo.png'
+        if not logo_url:
+            logo_url = 'http://localhost:5000/get_image/test_user/department_logo.png'
+        if not qrcode_url:
+            qrcode_url='http://localhost:5000/get_image/test_user/qrcode.png'
         self._canvas_width = canvas_width
         self._canvas_height = canvas_height
         self._canvas = np.full(fill_value=255, shape=(self.canvas_height, self.canvas_width, 4), dtype=np.uint8)
         self._layouts = [
             {
-                'id': 1,
+                'id': 0,
                 'preview': '',
                 'description': '模板1',
+                'layout_file': 'template0.lay',
                 'hover': False,
                 'data': [
                     {'type': "background", 'opacity': 0.7, 'url': "http://localhost:5000/get_image/test_user/bg.png"},
-                    {'type': "rect", 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 427, 'x': 17, 'y': 463},
-                    {'type': "rect", 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 485, 'h': 212, 'x': 178, 'y': 213},
-                    {'type': "rect", 'backgroundColor': '#000000', 'opacity': 1, 'w': 612, 'h': 4, 'x': 34, 'y': 671},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png", 'w': 265, 'h': 55, 'x': 390, 'y': 17},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png", 'w': 212, 'h': 55, 'x': 17, 'y': 17},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'w': 140, 'h': 212, 'x': 17, 'y': 214},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'w': 106, 'h': 106, 'x': 542, 'y': 300},
-                    {
-                        'type': "title", 'content': '',
-                        'font': {
-                            'fontSize': '34px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '158%'
-                        },
-                        'w': 560, 'h': 120, 'x': 60, 'y': 76
-                    },
-                    {
-                        'type': "text", 'content': "时间:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 70, 'h': 35, 'x': 185, 'y': 225
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'time',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 400, 'h': 35, 'x': 238, 'y': 225
-                    },
-                    {
-                        'type': "text", 'content': "地点:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 70, 'h': 35, 'x': 185, 'y': 260
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'location',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 186, 'h': 35, 'x': 238, 'y': 260
-                    },
-                    {
-                        'type': "text", 'content': "报告人:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 90, 'h': 35, 'x': 185, 'y': 295
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'reporter',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 220, 'h': 35, 'x': 256, 'y': 295
-                    },
-                    {
-                        'type': "text", 'content': "邀请人:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 90, 'h': 35, 'x': 185, 'y': 330
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'inviter',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 290, 'h': 35, 'x': 256, 'y': 330
-                    },
-                    {
-                        'type': "text", 'content': "腾讯会议号:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 130, 'h': 35, 'x': 185, 'y': 365
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'meeting_num',
-                        'font': {
-                            'fontSize': '18px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 220, 'h': 35, 'x': 290, 'y': 365
-                    },
-                    {
-                        'type': "text", 'content': "Abstract:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '19px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 120, 'h': 50, 'x': 25, 'y': 465
-                    },
-                    {
-                        'type': "text", 'content': "About the speaker:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '19px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '158%'
-                        },
-                        'w': 220, 'h': 50, 'x': 25, 'y': 678
-                    },
-                    {
-                        'type': "text",
-                        'content': '',
-                        'info_type': 'abstract',
-                        'font': {
-                            'fontSize': '14px',
-                            'fontFamily': '"Times New Roman",Georgia,Serif',
-                            'color': '#595959',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '135%'
-                        },
-                        'w': 625,
-                        'h': 170,
-                        'x': 26,
-                        'y': 495
-                    },
-                    {
-                        'type': "text",
-                        'content': '',
-                        'info_type': 'introduction',
-                        'font': {
-                            'fontSize': '14px',
-                            'fontFamily': '"Times New Roman",Georgia,Serif',
-                            'color': '#595959',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '135%'
-                        },
-                        'w': 625,
-                        'h': 170,
-                        'x': 26,
-                        'y': 708
+                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 210, 'x': 17, 'y': 463, 'content': []},
+                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 210, 'x': 17, 'y': 683, 'content': []},
+                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 485, 'h': 212, 'x': 178, 'y': 213, 'content': []},
+                    {'type': "rect", 'rect_type': 'divider', 'backgroundColor': '#000000', 'opacity': 1, 'w': 646, 'h': 4, 'x': 17, 'y': 676, 'content': []},
+                    {'type': "img", 'img_type': 'customized_logo', 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
+                     'w': 265, 'h': 55, 'x': 390, 'y': 17},
+                    {'type': "img", 'img_type': 'logo', 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
+                     'w': 212, 'h': 55, 'x': 17, 'y': 17},
+                    {'type': "img", 'img_type': 'photo', 'url': "http://localhost:5000/get_image/test_user/photo.png",
+                     'w': 140, 'h': 212, 'x': 17, 'y': 214},
+                    {'type': "img", 'img_type': 'qrcode', 'url': "http://localhost:5000/get_image/test_user/qrcode.png",
+                     'w': 106, 'h': 106, 'x': 542, 'y': 300},
+                    {'type': "title", 'content': '', 'w': 612, 'h': 120, 'x': 34, 'y': 76,
+                     'font': {
+                         'fontSize': '34px',
+                         'color': '#2D5960',
+                         'fontWeight': 'bold',
+                         'textAlign': 'left',
+                         'fontStyle': '',
+                         'letterSpacing': 0,
+                         'lineHeight': '150%'
+                     }
+                     },
+                ]
+            },
+            {
+                'id': 1,
+                'preview': '',
+                'description': '模板2',
+                'layout_file': 'template1.lay',
+                'hover': False,
+                'data': [
+                    {'type': "background", 'opacity': 1, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
+                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF',
+                     'opacity': 0.6, 'w': 646, 'h': 205, 'x': 17, 'y': 320, 'content': []},
+                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF',
+                     'opacity': 0.6, 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'content': []},
+                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF',
+                     'opacity': 0.6, 'w': 480, 'h': 136, 'x': 180, 'y': 170, 'content': []},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png", 'img_type': 'customized_logo',
+                     'w': 265, 'h': 55, 'x': 390, 'y': 10},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png", 'img_type': 'logo',
+                     'w': 212, 'h': 55, 'x': 10, 'y': 10},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'img_type': 'photo',
+                     'w': 150, 'h': 230, 'x': 17, 'y': 76},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'img_type': 'qrcode',
+                     'w': 106, 'h': 106, 'x': 542, 'y': 190},
+                    {'type': "title", 'content': '', 'w': 460, 'h': 80, 'x': 180, 'y': 76,
+                     'font': {
+                         'fontSize': '26px',
+                         'color': '#000000',
+                         'fontWeight': 'bold',
+                         'textAlign': 'left',
+                         'fontStyle': '',
+                         'letterSpacing': 0,
+                         'lineHeight': '150%'
+                     }
                     },
                 ]
             },
             {
                 'id': 2,
                 'preview': '',
-                'description': '模板2',
+                'description': '模板3',
+                'layout_file': 'template2.lay',
                 'hover': False,
                 'data': [
                     {'type': "background", 'opacity': 1, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
-                    {'type': "rect", 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 200, 'x': 17, 'y': 320},
-                    {'type': "rect", 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 350, 'x': 17, 'y': 540},
-                    {'type': "rect", 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 480, 'h': 230, 'x': 180, 'y': 76},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png", 'w': 265, 'h': 55, 'x': 390, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png", 'w': 212, 'h': 55, 'x': 10, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'w': 150, 'h': 230, 'x': 17, 'y': 76},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'w': 106, 'h': 106, 'x': 542, 'y': 190},
+                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 200, 'x': 17, 'y': 320, 'contenet': []},
+                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'contenet': []},
+                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 480, 'h': 146, 'x': 17, 'y': 160, 'contenet': []},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png", 'img_type': 'customized_logo',
+                     'w': 265, 'h': 55, 'x': 390, 'y': 10},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png", 'img_type': 'logo',
+                     'w': 212, 'h': 55, 'x': 10, 'y': 10},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'img_type': 'photo',
+                     'w': 150, 'h': 230, 'x': 510, 'y': 76},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'img_type': 'qrcode',
+                     'w': 106, 'h': 106, 'x': 375, 'y': 190},
                     {
                         'type': "title", 'content': '',
                         'font': {
@@ -287,232 +149,68 @@ class Poster:
                             'textAlign': 'left',
                             'fontStyle': '',
                             'letterSpacing': 0,
-                            'lineHeight': '158%'
+                            'lineHeight': '150%'
                         },
-                        'w': 460, 'h': 60, 'x': 180, 'y': 76
-                    },
-                    {
-                        'type': "text", 'content': "时间:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 70, 'h': 35, 'x': 185, 'y': 155
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'time',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 330, 'h': 35, 'x': 238, 'y': 155
-                    },
-                    {
-                        'type': "text", 'content': "地点:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 70, 'h': 35, 'x': 185, 'y': 183
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'location',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 166, 'h': 35, 'x': 238, 'y': 183
-                    },
-                    {
-                        'type': "text", 'content': "报告人:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 80, 'h': 35, 'x': 185, 'y': 211
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'reporter',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 200, 'h': 35, 'x': 256, 'y': 211
-                    },
-                    {
-                        'type': "text", 'content': "邀请人:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 80, 'h': 35, 'x': 185, 'y': 239
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'inviter',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 270, 'h': 35, 'x': 256, 'y': 239
-                    },
-                    {
-                        'type': "text", 'content': "腾讯会议号:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#2D5960',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 120, 'h': 35, 'x': 185, 'y': 267
-                    },
-                    {
-                        'type': "text", 'content': '', 'info_type': 'meeting_num',
-                        'font': {
-                            'fontSize': '16px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 200, 'h': 35, 'x': 290, 'y': 267
-                    },
-                    {
-                        'type': "text", 'content': "Abstract:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '19px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '100%'
-                        },
-                        'w': 120, 'h': 50, 'x': 25, 'y': 323
-                    },
-                    {
-                        'type': "text", 'content': "About the speaker:", 'info_type': 'default',
-                        'font': {
-                            'fontSize': '19px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '158%'
-                        },
-                        'w': 220, 'h': 50, 'x': 25, 'y': 535
-                    },
-                    {
-                        'type': "text",
-                        'content': '',
-                        'info_type': 'abstract',
-                        'font': {
-                            'fontSize': '14px',
-                            'fontFamily': '"Times New Roman",Georgia,Serif',
-                            'color': '#595959',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '158%'
-                        },
-                        'w': 625,
-                        'h': 165,
-                        'x': 26,
-                        'y': 353
-                    },
-                    {
-                        'type': "text",
-                        'content': '',
-                        'info_type': 'introduction',
-                        'font': {
-                            'fontSize': '14px',
-                            'fontFamily': '"Times New Roman",Georgia,Serif',
-                            'color': '#595959',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '135%'
-                        },
-                        'w': 625,
-                        'h': 310,
-                        'x': 26,
-                        'y': 565
-                    },
+                        'w': 460, 'h': 60, 'x': 17, 'y': 76
+                    }
                 ]
             },
-            {'id': 3, 'preview': '', 'description': '模板3', 'hover': False, 'data': []},
-            {'id': 4, 'preview': '', 'description': '模板4', 'hover': False, 'data': []},
-            {'id': 5, 'preview': '', 'description': '模板5', 'hover': False, 'data': []}
+            # {'id': 3, 'preview': '', 'description': '模板4', 'layout_file': 'template3.lay', 'hover': False, 'data': []},
+            # {'id': 4, 'preview': '', 'description': '模板5', 'layout_file': 'template4.lay', 'hover': False, 'data': []}
         ]
         for layout in self._layouts:
             for item in layout['data']:
+                temp_ff = copy.deepcopy(font_family)
                 if item['type'] == 'title':
                     item['content'] = title
-                elif item['type'] == 'text' and item['info_type'] == 'time':
-                    item['content'] = time
-                elif item['type'] == 'text' and item['info_type'] == 'location':
-                    item['content'] = location
-                elif item['type'] == 'text' and item['info_type'] == 'reporter':
-                    item['content'] = reporter
-                elif item['type'] == 'text' and item['info_type'] == 'inviter':
-                    item['content'] = inviter
-                elif item['type'] == 'text' and item['info_type'] == 'meeting_num':
-                    item['content'] = meeting_num
-                elif item['type'] == 'text' and item['info_type'] == 'abstract':
-                    item['content'] = abstract
-                elif item['type'] == 'text' and item['info_type'] == 'introduction':
-                    item['content'] = introduction
+                elif item['type'] == 'rect' and item['rect_type'] == 'info':
+                    content = []
+                    info_num = len(info_list)
+                    h = int(item['h'] / info_num)
+                    y = item['y']
+                    font_size = 1
+                    while True:
+                        font = ImageFont.truetype(font_path_global['bold'], font_size)
+                        char_width, char_height = font.getsize('中')
+                        if char_height * 1.8 >= h or font_size >= 22:
+                            temp_ff['info_title']['fontSize'] = f"{font_size}px"
+                            temp_ff['info']['fontSize'] = f"{font_size}px"
+                            break
+                        font_size += 1
+                    for info_item in info_list:
+                        w = len(English2Chinese[info_item]) * char_width
+                        content.append({'type': "text", 'content': English2Chinese[info_item], 'info_type': 'default',
+                                        'w': int(w * 1.5), 'h': h, 'x': item['x'], 'y': y, 'font': temp_ff['info_title']})
+                        content.append({'type': "text", 'content': info_list[info_item], 'info_type': info_item,
+                                        'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y, 'font': temp_ff['info']})
+                        y += h
+                    item['content'] = content
+                elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
+                    content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
+                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': temp_ff['ab&intro_title']},
+                               {'type': "text", 'content': abstract, 'info_type': 'abstract',
+                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': temp_ff['ab&intro']}]
+                    item['content'] = content
+                elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
+                    content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
+                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': temp_ff['ab&intro_title']},
+                               {'type': "text", 'content': introduction, 'info_type': 'introduction',
+                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': temp_ff['ab&intro']}]
+                    item['content'] = content
+                elif item['type'] == 'img' and item['img_type'] == 'photo':
+                    item['url'] = photo_url
+                elif item['type'] == 'img' and item['img_type'] == 'customized_logo':
+                    item['url'] = logo_url
+                elif item['type'] == 'img' and item['img_type'] == 'qrcode':
+                    item['url'] = qrcode_url
 
     @property
     def layouts(self):
         return self._layouts
+
+    @layouts.setter
+    def layouts(self, value):
+        self._layouts = value
 
     @property
     def canvas_width(self):
@@ -559,84 +257,33 @@ class Poster:
                 url_list = item['url'].split('/')
                 img = scale(cv2.imread(f'static/images/{url_list[-2]}/{url_list[-1]}', cv2.IMREAD_UNCHANGED), item['w'], item['h'])
                 self._canvas = paste_img(self._canvas, img, y1, y2, x1, x2)
-
-        # x1 = 50
-        # y1 = 50
-        # x2 = x1 + self._logo_1.shape[1]
-        # y2 = y1 + self._logo_1.shape[0]
-        # self._canvas = paste_img(self._canvas, self._logo_1, y1, y2, x1, x2)
-        #
-        # x1 = 1100
-        # y1 = 50
-        # x2 = x1 + self._logo_2.shape[1]
-        # y2 = y1 + self._logo_2.shape[0]
-        # self._canvas = paste_img(self._canvas, self._logo_2, y1, y2, x1, x2)
-        #
-        # x1 = 50
-        # y1 = 600
-        # x2 = x1 + self._photo.shape[1]
-        # y2 = y1 + self._photo.shape[0]
-        # self._canvas = paste_img(self._canvas, self._photo, y1, y2, x1, x2)
-        # cv2.imwrite('assets/temp/temp_poster.png', self._canvas)
-        #
-        # x1 = 1530
-        # y1 = 850
-        # x2 = x1 + self._qrcode.shape[1]
-        # y2 = y1 + self._qrcode.shape[0]
-        # self._canvas = paste_img(self._canvas, self._qrcode, y1, y2, x1, x2)
         cv2.imwrite('assets/temp/temp_poster.png', self._canvas)
 
         # 图像处理已经完成，剩余工作使用PIL库添加文字
         self._canvas = Image.open('assets/temp/temp_poster.png')
 
         # 添加海报标题与讲座基础信息
-        for item in template_data:
-            if item['type'] == 'title' or item['type'] == 'text':
-                font_path = font['bold'] if item['font']['fontWeight'] == 'bold' else font['normal']
-                font_size = add_text(img=self._canvas, text=item['content'], max_width=item['w'], max_height=item['h'], font_path=font_path,
-                                     x=item['x'], y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
-                                     font_color=hex2RGB(item['font']['color']))
-                item['font']['fontSize'] = f'{font_size}px'
-        # 添加讲座基础信息
-        # info_font_size = 50
-        # add_text(img=temp_canvas, text='时间:', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=550, y=650, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
-        # add_text(img=temp_canvas, text=self._time, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
-        #          x=550 + 3 * info_font_size, y=650 + font_shift, font_size=info_font_size, font_color=(0, 0, 0),
-        #          bold=True)
-        # add_text(img=temp_canvas, text='地点:', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=550, y=750, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
-        # add_text(img=temp_canvas, text=self._location, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
-        #          x=550 + 3 * info_font_size, y=750 + font_shift, font_size=info_font_size, font_color=(0, 0, 0),
-        #          bold=True)
-        # add_text(img=temp_canvas, text='报告人:', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=550, y=850, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
-        # add_text(img=temp_canvas, text=self._reporter, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
-        #          x=550 + 4 * info_font_size, y=850 + font_shift, font_size=info_font_size, font_color=(0, 0, 0),
-        #          bold=True)
-        # add_text(img=temp_canvas, text='邀请人: ', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=550, y=950, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
-        # add_text(img=temp_canvas, text=self._inviter, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
-        #          x=550 + 4 * info_font_size, y=950 + font_shift, font_size=info_font_size, font_color=(0, 0, 0),
-        #          bold=True)
-        # add_text(img=temp_canvas, text='腾讯会议号:', max_width=1100, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=550, y=1050, font_size=info_font_size, font_color=(45, 89, 96), bold=False)
-        # add_text(img=temp_canvas, text=self._meeting_num, max_width=1100, font_path="C:\\Windows\\Fonts\\simfang.ttf",
-        #          x=550 + 6 * info_font_size, y=1050 + font_shift, font_size=info_font_size, font_color=(0, 0, 0),
-        #          bold=True)
-        #
-        # # 添加摘要与讲者介绍
-        # text_size = 45
-        # add_text(img=temp_canvas, text='Abstract:', max_width=1720, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=100, y=1330, font_size=info_font_size, font_color=(0, 0, 0), bold=False)
-        # add_text(img=temp_canvas, text=self._abstract, max_width=1720, font_path="C:\\Windows\\Fonts\\timesbd.ttf",
-        #          x=100, y=1410, font_size=text_size, font_color=(89, 89, 89), bold=False)
-        # add_text(img=temp_canvas, text='About the speaker:', max_width=1720, font_path="C:\\Windows\\Fonts\\msyhbd.ttc",
-        #          x=100, y=1950, font_size=info_font_size, font_color=(0, 0, 0), bold=False)
-        # add_text(img=temp_canvas, text=self._introduction, max_width=1720, font_path="C:\\Windows\\Fonts\\timesbd.ttf",
-        #          x=100, y=2030, font_size=text_size, font_color=(89, 89, 89), bold=False)
-        #
+        for text in template_data:
+            if text['type'] == 'title':
+                font_path = font_path_global['bold'] if text['font']['fontWeight'] == 'bold' else font_path_global['normal']
+                font_size = add_text(img=self._canvas, text=text['content'], max_width=text['w'], max_height=text['h'], font_path=font_path,
+                                     x=text['x'], y=text['y'], font_size=int(text['font']['fontSize'][:-2]),
+                                     font_color=hex2RGB(text['font']['color']), count=1)
+                text['font']['fontSize'] = f'{font_size}px'
 
+            elif text['type'] == 'rect':
+                if text['rect_type'] == 'info':
+                    for item in text['content']:
+                        font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else font_path_global['normal']
+                        add_one_line_text(img=self._canvas, text=item['content'], font_path=font_path, x=item['x'], y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
+                                          font_color=hex2RGB(item['font']['color']))
+                else:
+                    for item in text['content']:
+                        font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else font_path_global['normal']
+                        font_size = add_text(img=self._canvas, text=item['content'], max_width=item['w'], max_height=item['h'], font_path=font_path,
+                                             x=item['x'], y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
+                                             font_color=hex2RGB(item['font']['color']), count=1)
+                        item['font']['fontSize'] = f'{font_size}px'
         # 保存最终版海报
         self._canvas.save(save_path)
 
@@ -732,20 +379,35 @@ def split_text(text, max_width, font_path, font_size):
     return ret + '\n', char_width, char_height
 
 
-def add_text(img, text, font_path, x, y, max_width, max_height, font_size, font_color):
+def add_text(img, text, font_path, x, y, max_width, max_height, font_size, font_color, count):
     """
     在图片上添加粗体文字信息
     """
     draw = ImageDraw.Draw(img)
     text_slice, char_width, char_height = split_text(text, max_width, font_path, font_size)
-    # 调大字体
-    if 1.5 * char_height * text_slice.count('\n') < 0.6 * max_height:
-        font_size = int(font_size * 1.3)
-        text_slice, char_width, char_height = split_text(text, max_width, font_path, font_size)
     spacing = round(0.5 * char_height)
+    # 调小字体
+    if 1.5 * char_height * text_slice.count('\n') > max_height and count < 100:
+        return add_text(img, text, font_path, x, y, max_width, max_height, font_size - 2, font_color, count + 1)
+    # 调大字体
+    elif 1.5 * char_height * text_slice.count('\n') < 0.7 * max_height and count < 100:
+        return add_text(img, text, font_path, x, y, max_width, max_height, font_size + 2, font_color, count + 1)
+        # font_size = int(font_size * 1.3)
+        # text_slice, char_width, char_height = split_text(text, max_width, font_path, font_size)
     font = ImageFont.truetype(font_path, font_size)
-    draw.text((x + char_width, y + spacing), text_slice, font_color, font, spacing=spacing)
+    draw.text((x + char_width * 0.5, y + spacing * 0.5), text_slice, font_color, font, spacing=spacing)
     return font_size
+
+
+def add_one_line_text(img, text, font_path, x, y, font_size, font_color):
+    """
+    在图片上添加一行文字信息
+    """
+    draw = ImageDraw.Draw(img)
+    font = ImageFont.truetype(font_path, font_size)
+    char_width, char_height = font.getsize('中')
+    spacing = round(0.5 * char_height)
+    draw.text((x + char_width, y + spacing), text, font_color, font, spacing=spacing)
 
 
 def add_rect(img, x1, y1, x2, y2, color, opacity):
@@ -755,12 +417,6 @@ def add_rect(img, x1, y1, x2, y2, color, opacity):
     cv2.rectangle(blender, (0, 0), (x, y), color, -1)
     img[y1:y2, x1:x2] = cv2.addWeighted(img[y1:y2, x1:x2], 1 - opacity, blender, opacity, 0)
     return img
-
-
-def show_and_block(img):
-    cv2.imshow("img_show", img)
-    if cv2.waitKey(0) & 0xFF == 27:
-        cv2.destroyAllWindows()
 
 
 def set_opacity(img, opacity=0.7):
@@ -789,37 +445,42 @@ def scale(img, target_width, target_height):
 
 
 if __name__ == '__main__':
-    title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
-    time = '2022年11月16日(周三) 9:30-11.30'
-    location = '第一科研楼报告厅'
-    reporter = '陈明 副教授/杜克大学'
-    inviter = '原佩琦 学术垃圾/南方科技大学'
-    meeting_num = '123-456-789'
-    abstract = 'We present a novel method for blending hierarchical layouts with semantic labels. ' \
-               'The core of our method is a hierarchical structure correspondence algorithm, ' \
-               'which recursively finds optimal substructure correspondences, ' \
-               'achieving a globally optimal correspondence between a pair of hierarchical layouts. ' \
-               'This correspondence is consistent with the structures of both layouts, ' \
-               'allowing us to define the union of the layouts’ structures. ' \
-               'The resulting compound structure helps extract intermediate layout structures, ' \
-               'from which blended layouts can be generated via an optimization approach.'
-    introduction = 'We present a novel method for blending hierarchical layouts with semantic labels. ' \
-                   'The core of our method is a hierarchical structure correspondence algorithm, ' \
-                   'which recursively finds optimal substructure correspondences, ' \
-                   'achieving a globally optimal correspondence between a pair of hierarchical layouts. ' \
-                   'This correspondence is consistent with the structures of both layouts, ' \
-                   'allowing us to define the union of the layouts’ structures. ' \
-                   'The resulting compound structure helps extract intermediate layout structures, ' \
-                   'from which blended layouts can be generated via an optimization approach.'
-    bg_path = 'static/images/test_user/bg.png'
-    logo_1_path = 'static/images/test_user/school_logo.png'
-    logo_2_path = 'static/images/test_user/department_logo.png'
-    photo_path = 'static/images/test_user/photo.png'
-    qrcode_path = 'static/images/test_user/qrcode.png'
-    poster = Poster(title=title, time=time, location=location, reporter=reporter, inviter=inviter,
-                    meeting_num=meeting_num, abstract=abstract, introduction=introduction,
-                    bg_path=bg_path, logo_1_path=logo_1_path, logo_2_path=logo_2_path, qrcode_path=qrcode_path,
-                    photo_path=photo_path)
-    for index in range(len(poster.layouts)):
-        poster.generate(f'static/templates/test_user/template{index}.png', index)
-        poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
+    pass
+    # title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
+    # time = '2022年11月16日(周三) 9:30-11.30'
+    # location = '第一科研楼报告厅'
+    # reporter = '陈明 副教授/杜克大学'
+    # inviter = '原佩琦 南方科技大学'
+    # meeting_num = '123-456-789'
+    # abstract = 'We present a novel method for blending hierarchical layouts with semantic labels. ' \
+    #            'The core of our method is a hierarchical structure correspondence algorithm, ' \
+    #            'which recursively finds optimal substructure correspondences, ' \
+    #            'achieving a globally optimal correspondence between a pair of hierarchical layouts. ' \
+    #            'This correspondence is consistent with the structures of both layouts, ' \
+    #            'allowing us to define the union of the layouts’ structures. ' \
+    #            'The resulting compound structure helps extract intermediate layout structures, ' \
+    #            'from which blended layouts can be generated via an optimization approach.'
+    # introduction = 'We present a novel method for blending hierarchical layouts with semantic labels. ' \
+    #                'The core of our method is a hierarchical structure correspondence algorithm, ' \
+    #                'which recursively finds optimal substructure correspondences, ' \
+    #                'achieving a globally optimal correspondence between a pair of hierarchical layouts. ' \
+    #                'This correspondence is consistent with the structures of both layouts, ' \
+    #                'allowing us to define the union of the layouts’ structures. ' \
+    #                'The resulting compound structure helps extract intermediate layout structures, ' \
+    #                'from which blended layouts can be generated via an optimization approach.'
+    # bg_path = 'static/images/test_user/bg.png'
+    # logo_1_path = 'static/images/test_user/school_logo.png'
+    # logo_2_path = 'static/images/test_user/department_logo.png'
+    # photo_path = 'static/images/test_user/photo.png'
+    # qrcode_path = 'static/images/test_user/qrcode.png'
+    # info_list = {'time': time, 'location': location, 'reporter': reporter}
+    # if inviter:
+    #     info_list['inviter'] = inviter
+    # if meeting_num:
+    #     info_list['meeting_num'] = meeting_num
+    # poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction,
+    #                 bg_path=bg_path, logo_1_path=logo_1_path, logo_2_path=logo_2_path, qrcode_path=qrcode_path,
+    #                 photo_path=photo_path)
+    # for index in range(len(poster.layouts)):
+    #     poster.generate(f'static/templates/test_user/template{index}.png', index)
+    #     poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'

@@ -8,21 +8,20 @@
         title="模板混合"
         width="30%">
       <div style="width: 100%; height: 600px; display: flex; justify-content: center; align-items: center;">
-        <div style="background-color: black; width: 80%; height: 600px;">
-          hh
-        </div>
+        <img v-for="img in this.blending_list" v-show="img.show" :key="img.id" :src="img.preview" alt="图片加载失败" style="width: 80%; height: 600px;"/>
       </div>
       <div style="width: 100%; height: 60px; display: flex; justify-content: center; align-items: center;">
         <el-slider
             v-model="alpha"
-            :step="25"
+            :step="10"
             show-stops
-            style="width: 60%">
+            style="width: 60%"
+            @change="handleSliderChange()">
         </el-slider>
       </div>
       <div style="width: 100%; height: 60px; display: flex; justify-content: center; align-items: center;">
         <el-button @click="blendDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="blendDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="chooseBlendingResult">添加模板</el-button>
       </div>
     </el-dialog>
     <div style="margin-left: 15px; margin-top: 15px; font-weight: bold">选择模板</div>
@@ -97,6 +96,7 @@
 import {mapActions} from 'poster/poster.vuex'
 import {BackgroundWidget, ImageWidget, RectWidget, TextWidget} from '../../widgetConstructor'
 import draggable from "vuedraggable";
+import axios from "axios";
 
 export default {
   components: {
@@ -108,6 +108,8 @@ export default {
       blendDialogVisible: false,
       alpha: 0,
       poster_list: this.$store.state.poster_list,
+      templateBlended: null,
+      blending_list: [],
       blender1: [],
       blender2: [],
       posterOptions: {
@@ -121,6 +123,8 @@ export default {
       },
     }
   },
+  created() {
+  },
   methods: {
     ...mapActions(['addItem', 'addAssistWidget', 'addBackground', 'removeAllAssistWidgets', 'removeBackground', 'removeAllItems']),
     renderPoster(index) {
@@ -130,54 +134,68 @@ export default {
       let poster_data = this.poster_list[index].data
       for (let i = 0; i < poster_data.length; i++) {
         if (poster_data[i].type === "background") {
-          this.urlToBase64(poster_data[i].url).then(res => {
-            const src = res
-            let temp_bg = new BackgroundWidget({
-              wState: {
-                src,
-                opacity: poster_data[i].opacity,
-                isSolid: false
-              }
-            })
-            this.addBackground(temp_bg)
-          })
+          this.add_background(poster_data[i])
         } else if (poster_data[i].type === "img") {
-          this.urlToBase64(poster_data[i].url).then(res => {
-            const src = res
-            let temp_img = new ImageWidget({wState: {src}})
-            temp_img.dragInfo.w = poster_data[i].w
-            temp_img.dragInfo.h = poster_data[i].h
-            temp_img.dragInfo.x = poster_data[i].x
-            temp_img.dragInfo.y = poster_data[i].y
-            // 若不设定true则会根据源文件自适应图片大小，我们渲染出来的图片希望可以自己设置宽高，所以将isCopied设为true
-            temp_img.isCopied = true
-            this.addItem(temp_img)
-          })
+          this.add_img(poster_data[i])
         } else if (poster_data[i].type === "rect") {
-          let temp_rect = new RectWidget()
-          temp_rect.dragInfo.w = poster_data[i].w
-          temp_rect.dragInfo.h = poster_data[i].h
-          temp_rect.dragInfo.x = poster_data[i].x
-          temp_rect.dragInfo.y = poster_data[i].y
-          temp_rect.wState.style.backgroundColor = poster_data[i].backgroundColor
-          temp_rect.wState.style.opacity = poster_data[i].opacity
-          this.addItem(temp_rect)
-        } else if (poster_data[i].type === "text" || poster_data[i].type === "title") {
-          let temp_text = new TextWidget(
-              {
-                wState: {
-                  text: poster_data[i].content,
-                  style: poster_data[i].font
-                }
-              })
-          temp_text.dragInfo.w = poster_data[i].w
-          temp_text.dragInfo.h = poster_data[i].h
-          temp_text.dragInfo.x = poster_data[i].x
-          temp_text.dragInfo.y = poster_data[i].y
-          temp_text.isCopied = true
-          this.addItem(temp_text)
+          this.add_rect(poster_data[i])
+        } else if (poster_data[i].type === "title") {
+          this.add_text(poster_data[i])
         }
       }
+    },
+    add_background(data) {
+      this.urlToBase64(data.url).then(res => {
+        const src = res
+        let temp_bg = new BackgroundWidget({
+          wState: {
+            src,
+            opacity: data.opacity,
+            isSolid: false
+          }
+        })
+        this.addBackground(temp_bg)
+      })
+    },
+    add_img(data) {
+      this.urlToBase64(data.url).then(res => {
+        const src = res
+        let temp_img = new ImageWidget({wState: {src}})
+        temp_img.dragInfo.w = data.w
+        temp_img.dragInfo.h = data.h
+        temp_img.dragInfo.x = data.x
+        temp_img.dragInfo.y = data.y
+        // 若不设定true则会根据源文件自适应图片大小，我们渲染出来的图片希望可以自己设置宽高，所以将isCopied设为true
+        temp_img.isCopied = true
+        this.addItem(temp_img)
+      })
+    },
+    add_rect(data) {
+      let temp_rect = new RectWidget()
+      temp_rect.dragInfo.w = data.w
+      temp_rect.dragInfo.h = data.h
+      temp_rect.dragInfo.x = data.x
+      temp_rect.dragInfo.y = data.y
+      temp_rect.wState.style.backgroundColor = data.backgroundColor
+      temp_rect.wState.style.opacity = data.opacity
+      this.addItem(temp_rect)
+      for (let i = 0; i < data.content.length; i++) {
+        this.add_text(data.content[i])
+      }
+    },
+    add_text(data) {
+      let temp_text = new TextWidget({
+        wState: {
+          text: data.content,
+          style: data.font
+        }
+      })
+      temp_text.dragInfo.w = data.w
+      temp_text.dragInfo.h = data.h
+      temp_text.dragInfo.x = data.x
+      temp_text.dragInfo.y = data.y
+      temp_text.isCopied = true
+      this.addItem(temp_text)
     },
     mouseenter(index) {
       this.poster_list[index].hover = true
@@ -244,7 +262,60 @@ export default {
       });
     },
     blendTemplate() {
-      this.blendDialogVisible = true;
+      const loading = this.$loading({
+        lock: true,
+        text: '正在混合中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      });
+      this.blending_list = []
+      this.alpha = 0
+      axios.get('http://localhost:5000/blend', {
+        params: {
+          userid: this.user,
+          lay1: this.blender1[0]['layout_file'],
+          lay2: this.blender2[0]['layout_file'],
+          bg1: this.blender1[0]['data'][0]['url'],
+          bg2: this.blender2[0]['data'][0]['url'],
+          title: this.$store.state.info_form.title,
+          time: this.$store.state.info_form.datetime,
+          location: this.$store.state.info_form.location,
+          reporter: this.$store.state.info_form.reporter,
+          inviter: this.$store.state.info_form.inviter,
+          meeting_num: this.$store.state.info_form.meeting_num,
+          introduction: this.$store.state.info_form.introduction,
+          abstract: this.$store.state.info_form.abstract,
+        }
+      }).then((resp) => {
+        this.loading = false
+        this.$store.commit('setBlendingList', resp.data)
+        this.blending_list = resp.data
+        this.blendDialogVisible = true
+        setTimeout(() => {
+          loading.close();
+        }, 500);
+      })
+    },
+    chooseBlendingResult() {
+      let id = 0
+      for(let i = 0; i < this.poster_list.length; i++) {
+        if (this.poster_list[i].id > id){
+          id = this.poster_list[i].id
+        }
+      }
+      this.templateBlended.id = id + 1
+      this.templateBlended.description = `模板${id + 2}`
+      this.poster_list.push(this.templateBlended)
+      this.blendDialogVisible = false
+      this.templateBlended = null
+    },
+    handleSliderChange() {
+      for (let i = 0; i < this.blending_list.length; i++) {
+        this.blending_list[i].show = this.blending_list[i].id === this.alpha
+        if (this.blending_list[i].id === this.alpha){
+          this.templateBlended = this.blending_list[i]
+        }
+      }
     }
   }
 }

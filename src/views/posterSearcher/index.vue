@@ -77,18 +77,42 @@
         <el-form-item label="线上会议号">
           <el-input v-model="form.meeting_num"></el-input>
         </el-form-item>
-<!--        <el-form-item label="报告人照片">-->
-<!--          <el-upload-->
-<!--              :before-upload="beforeAvatarSuccess"-->
-<!--              :on-success="handleAvatarSuccess"-->
-<!--              :show-file-list="false"-->
-<!--              action="https://jsonplaceholder.typicode.com/posts/"-->
-<!--              class="upload-demo"-->
-<!--              list-type="picture">-->
-<!--            <el-button size="small" type="primary">点击上传</el-button>-->
-<!--            <div slot="tip" class="el-upload__tip">只能上传<b>jpg/png</b>文件，且不超过<b>500kb</b></div>-->
-<!--          </el-upload>-->
-<!--        </el-form-item>-->
+        <el-form-item label="图片素材">
+          <el-col :span="8">
+            <el-upload
+              :before-upload="beforeAvatarSuccess"
+              action="http://127.0.0.1:5000/upload"
+              :on-success="handlePhotoSuccess"
+              multiple
+              :file-list="fileList"
+              list-type="picture">
+            <el-button size="medium" type="primary">报告人照片</el-button>
+            <div slot="tip" style="font-size: 14px; color: #9099a4;">只能上传 <b>jpg/png</b> 文件，且不超过 <b>2MB</b> </div>
+          </el-upload>
+          </el-col>
+          <el-col :span="8">
+            <el-upload
+              :before-upload="beforeAvatarSuccess"
+              action="http://127.0.0.1:5000/upload"
+              :on-success="handleLogoSuccess"
+              :show-file-list="false"
+              list-type="picture">
+            <el-button size="medium" type="primary">上传讲座logo</el-button>
+          </el-upload>
+          </el-col>
+          <el-col :span="8">
+            <el-upload
+              :before-upload="beforeAvatarSuccess"
+              action="http://127.0.0.1:5000/upload"
+              :on-success="handleQrcodeSuccess"
+              :file-list="fileList"
+              :show-file-list="false"
+              list-type="picture">
+            <el-button size="medium" type="primary">上传二维码</el-button>
+<!--            <div slot="tip" class="el-upload__tip">只能上传<b>jpg/png</b>文件，且不超过<b>2MB</b></div>-->
+          </el-upload>
+          </el-col>
+        </el-form-item>
         <el-form-item>
           <el-button :loading="loading"
                      icon="el-icon-magic-stick"
@@ -142,18 +166,18 @@
         <el-form-item label="Online">
           <el-input v-model="form.meeting_num"></el-input>
         </el-form-item>
-        <el-form-item label="Photo">
-          <el-upload
-              :before-remove="beforeRemove"
-              :file-list="fileList"
-              :on-exceed="handleExceed"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              action="https://jsonplaceholder.typicode.com/posts/">
-            <el-button size="small" type="primary">upload</el-button>
-            <div slot="tip" class="el-upload__tip">Only <b>jpg/png</b> files with size less than <b>500kb</b> can be uploaded</div>
-          </el-upload>
-        </el-form-item>
+<!--        <el-form-item label="Photo">-->
+<!--          <el-upload-->
+<!--              :before-remove="beforeRemove"-->
+<!--              :file-list="fileList"-->
+<!--              :on-exceed="handleExceed"-->
+<!--              :on-preview="handlePreview"-->
+<!--              :on-remove="handleRemove"-->
+<!--              action="https://jsonplaceholder.typicode.com/posts/">-->
+<!--            <el-button size="medium" type="primary">upload</el-button>-->
+<!--            <div slot="tip" class="el-upload__tip">Only <b>jpg/png</b> files with size less than <b>500kb</b> can be uploaded</div>-->
+<!--          </el-upload>-->
+<!--        </el-form-item>-->
         <el-form-item>
           <el-button icon="el-icon-magic-stick"
                      round
@@ -179,7 +203,6 @@ let checkIntro = (rule, value, callback) => {
   }
   setTimeout(() => {
     for (let i in word) {
-      console.log(value.includes(word[i]));
       if (value.includes(word[i])) {
         callback(new Error('不能包含敏感词' + word[i]));
       }
@@ -190,7 +213,7 @@ let checkIntro = (rule, value, callback) => {
 export default {
   data() {
     return {
-      // sensitiveWordNotice: false,
+      fileList: [],
       loading: false,
       language: true,
       chineseLocation: ['第一科研楼报告厅', '图书馆102会议室', '工学院南楼551会议室'],
@@ -208,6 +231,8 @@ export default {
         introduction: '',
         meeting_num: '',
         photo: '',
+        logo: '',
+        qrcode:''
       },
       chineseRules: {
         title: [
@@ -255,12 +280,13 @@ export default {
       }
     }
   },
-  created() {
-  },
+  created() {},
   methods: {
     submitForm(formName) {
       if (this.form.time !== '' || this.form.time !== null) {
-        this.form.datetime = `${this.form.date} ${this.form.time[0]}-${this.form.time[1]}`
+        let dt = new Date(this.form.date);
+        let weekDay = ["(周日)", "(周一)", "(周二)", "(周三)", "(周四)", "(周五)", "(周六)"];
+        this.form.datetime = `${this.form.date} ${weekDay[dt.getDay()]} ${this.form.time[0]}-${this.form.time[1]}`
       }
       this.$store.state.info_form = this.form
       this.$refs[formName].validate((valid) => {
@@ -273,29 +299,43 @@ export default {
             this.$store.commit('setPosterList', resp.data)
             this.$router.push('editor')
           })
-        } else {
-          console.log('error submit!!');
-          return false;
         }
+        return false
       })
-    },
-    handleAvatarSuccess(res, file) {
-      this.form.photo = URL.createObjectURL(file.raw)
     },
     beforeAvatarSuccess(file) {
       //验证图片格式大小信息
-      console.log(file)
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLt2M = file.size / 1024 / 1024 < 2;
       if (!isJPG) {
-        this.$message.error('上传图片只能是 JPG 或 PNG 格式!');
+        this.$message.error('上传图片只能是 JPG 或 PNG 格式!')
+        return isJPG && isLt2M
       }
       if (!isLt2M) {
-        this.$message.error('上传图片大小不能超过 2MB!');
+        this.$message.error('上传图片大小不能超过 2MB!')
+        return isJPG && isLt2M
       }
       //图片格式大小信息没问题 执行上传图片的方法
-      return isJPG && isLt2M;
-    }
+      return isJPG && isLt2M
+    },
+    handlePhotoSuccess(res, file, fileList) {
+      if (res.msg === 'success') {
+        this.form.photo = res.url
+        this.fileList.push(file)
+      }
+    },
+    handleLogoSuccess(res, file, fileList) {
+      if(res.msg === 'success'){
+        this.form.logo = res.url
+        this.fileList.push(file)
+      }
+    },
+    handleQrcodeSuccess(res, file, fileList) {
+      if(res.msg === 'success'){
+        this.form.qrcode = res.url
+        this.fileList.push(file)
+      }
+    },
   }
 }
 </script>
