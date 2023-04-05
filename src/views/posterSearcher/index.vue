@@ -291,7 +291,7 @@ export default {
       this.$store.state.info_form = this.form
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.loading = true
+          this.loading = false
           axios.get('http://localhost:5000/submit_poster_info', {
             params: this.$store.state.info_form
           }).then((resp) => {

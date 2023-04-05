@@ -5,6 +5,7 @@ node_modules
 # local env files
 .env.local
 .env.*.local
+/poster_backend/__pycache__
 
 # Log files
 npm-debug.log*

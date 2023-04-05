@@ -3,19 +3,11 @@ import copy
 import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
+from poster_backend.config import font_path_global, style, English2Chinese
 
-font_path_global = {'bold': 'C:\\Windows\\Fonts\\msyhbd.ttc', 'normal': 'C:\\Windows\\Fonts\\msyh.ttc'}
-font_family = {
-    'info': {'fontSize': '0px', 'color': '#000000', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
-             'letterSpacing': 0, 'lineHeight': '100%'},
-    'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
-                   'letterSpacing': 0, 'lineHeight': '100%'},
-    'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#595959', 'fontWeight': 'bold',
-                 'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
-    'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#000000', 'fontWeight': 'bold',
-                       'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'}}
-font_shift = 10
-English2Chinese = {'time': '时间:', 'location': '地点:', 'reporter': '报告人:', 'inviter': '邀请人:', 'meeting_num': '腾讯会议号:', 'abstract': '报告摘要', 'introduction': '报告人简介'}
+import openai
+import urllib.request
+
 warnings.filterwarnings("ignore")
 
 
@@ -26,29 +18,15 @@ class Poster:
                  photo_url='',
                  logo_url='',
                  qrcode_url=''):
-        """
-        :param title: 报告主题
-        :param time: 报告举办时间
-        :param location: 报告举办地点
-        :param reporter: 报告人
-        :param inviter: 邀请人
-        :param meeting_num: 腾讯会议号
-        :param abstract: 报告摘要
-        :param introduction: 讲者简介
-        :param photo_path: 讲者相片
-        :param bg_path: 背景图片
-        :param logo_1_path: 学校标识
-        :param logo_2_path: 系标识/讲堂标识
-        """
         # 获取海报信息, 读取图像元素, 初始化海报面板
         if info_list is None:
             info_list = {'time': '', 'location': '', 'reporter': ''}
         if not photo_url:
-            photo_url = 'http://localhost:5000/get_image/test_user/user_photo.png'
+            photo_url = 'http://localhost:5000/get_image/test_user/photo.png'
         if not logo_url:
             logo_url = 'http://localhost:5000/get_image/test_user/department_logo.png'
         if not qrcode_url:
-            qrcode_url='http://localhost:5000/get_image/test_user/qrcode.png'
+            qrcode_url = 'http://localhost:5000/get_image/test_user/qrcode.png'
         self._canvas_width = canvas_width
         self._canvas_height = canvas_height
         self._canvas = np.full(fill_value=255, shape=(self.canvas_height, self.canvas_width, 4), dtype=np.uint8)
@@ -60,30 +38,26 @@ class Poster:
                 'layout_file': 'template0.lay',
                 'hover': False,
                 'data': [
-                    {'type': "background", 'opacity': 0.7, 'url': "http://localhost:5000/get_image/test_user/bg.png"},
-                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 210, 'x': 17, 'y': 463, 'content': []},
-                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 210, 'x': 17, 'y': 683, 'content': []},
-                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 485, 'h': 212, 'x': 178, 'y': 213, 'content': []},
-                    {'type': "rect", 'rect_type': 'divider', 'backgroundColor': '#000000', 'opacity': 1, 'w': 646, 'h': 4, 'x': 17, 'y': 676, 'content': []},
-                    {'type': "img", 'img_type': 'customized_logo', 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
+                    {'type': "background", 'opacity': 0.8, 'url': "http://localhost:5000/get_image/test_user/bg.png"},
+                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#f1f2f6', 'opacity': 0.6, 'w': 646,
+                     'h': 220, 'x': 17, 'y': 443, 'content': []},
+                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#f1f2f6', 'opacity': 0.6,
+                     'w': 646, 'h': 220, 'x': 17, 'y': 673, 'content': []},
+                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#f1f2f6', 'opacity': 0.6, 'w': 465,
+                     'h': 210, 'x': 198, 'y': 213, 'content': []},
+                    {'type': "rect", 'rect_type': 'divider', 'backgroundColor': '#4b4b4b', 'opacity': 1, 'w': 646,
+                     'h': 4, 'x': 17, 'y': 666, 'content': []},
+                    {'type': "img", 'img_type': 'customized_logo',
+                     'url': "http://localhost:5000/get_image/test_user/department_logo.png",
                      'w': 265, 'h': 55, 'x': 390, 'y': 17},
-                    {'type': "img", 'img_type': 'logo', 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
+                    {'type': "img", 'img_type': 'logo',
+                     'url': "http://localhost:5000/get_image/test_user/school_logo.png",
                      'w': 212, 'h': 55, 'x': 17, 'y': 17},
                     {'type': "img", 'img_type': 'photo', 'url': "http://localhost:5000/get_image/test_user/photo.png",
-                     'w': 140, 'h': 212, 'x': 17, 'y': 214},
+                     'w': 160, 'h': 210, 'x': 17, 'y': 214},
                     {'type': "img", 'img_type': 'qrcode', 'url': "http://localhost:5000/get_image/test_user/qrcode.png",
                      'w': 106, 'h': 106, 'x': 542, 'y': 300},
-                    {'type': "title", 'content': '', 'w': 612, 'h': 120, 'x': 34, 'y': 76,
-                     'font': {
-                         'fontSize': '34px',
-                         'color': '#2D5960',
-                         'fontWeight': 'bold',
-                         'textAlign': 'left',
-                         'fontStyle': '',
-                         'letterSpacing': 0,
-                         'lineHeight': '150%'
-                     }
-                     },
+                    {'type': "title", 'content': '', 'w': 612, 'h': 120, 'x': 34, 'y': 76,},
                 ]
             },
             {
@@ -93,32 +67,24 @@ class Poster:
                 'layout_file': 'template1.lay',
                 'hover': False,
                 'data': [
-                    {'type': "background", 'opacity': 1, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
+                    {'type': "background", 'opacity': 0.8, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
                     {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF',
                      'opacity': 0.6, 'w': 646, 'h': 205, 'x': 17, 'y': 320, 'content': []},
                     {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF',
                      'opacity': 0.6, 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'content': []},
                     {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF',
                      'opacity': 0.6, 'w': 480, 'h': 136, 'x': 180, 'y': 170, 'content': []},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png", 'img_type': 'customized_logo',
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
+                     'img_type': 'customized_logo',
                      'w': 265, 'h': 55, 'x': 390, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png", 'img_type': 'logo',
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
+                     'img_type': 'logo',
                      'w': 212, 'h': 55, 'x': 10, 'y': 10},
                     {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'img_type': 'photo',
                      'w': 150, 'h': 230, 'x': 17, 'y': 76},
                     {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'img_type': 'qrcode',
                      'w': 106, 'h': 106, 'x': 542, 'y': 190},
-                    {'type': "title", 'content': '', 'w': 460, 'h': 80, 'x': 180, 'y': 76,
-                     'font': {
-                         'fontSize': '26px',
-                         'color': '#000000',
-                         'fontWeight': 'bold',
-                         'textAlign': 'left',
-                         'fontStyle': '',
-                         'letterSpacing': 0,
-                         'lineHeight': '150%'
-                     }
-                    },
+                    {'type': "title", 'content': '', 'w': 460, 'h': 80, 'x': 180, 'y': 76},
                 ]
             },
             {
@@ -128,13 +94,15 @@ class Poster:
                 'layout_file': 'template2.lay',
                 'hover': False,
                 'data': [
-                    {'type': "background", 'opacity': 1, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
-                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 200, 'x': 17, 'y': 320, 'contenet': []},
-                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'contenet': []},
-                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF', 'opacity': 0.6, 'w': 480, 'h': 146, 'x': 17, 'y': 160, 'contenet': []},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png", 'img_type': 'customized_logo',
+                    {'type': "background", 'opacity': 0.8, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
+                    {'type': "rect", 'rect_type': 'abstract', 'w': 646, 'h': 200, 'x': 17, 'y': 320, 'contenet': []},
+                    {'type': "rect", 'rect_type': 'introduction', 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'contenet': []},
+                    {'type': "rect", 'rect_type': 'info', 'w': 480, 'h': 146, 'x': 17, 'y': 160, 'contenet': []},
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
+                     'img_type': 'customized_logo',
                      'w': 265, 'h': 55, 'x': 390, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png", 'img_type': 'logo',
+                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
+                     'img_type': 'logo',
                      'w': 212, 'h': 55, 'x': 10, 'y': 10},
                     {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'img_type': 'photo',
                      'w': 150, 'h': 230, 'x': 510, 'y': 76},
@@ -158,11 +126,24 @@ class Poster:
             # {'id': 3, 'preview': '', 'description': '模板4', 'layout_file': 'template3.lay', 'hover': False, 'data': []},
             # {'id': 4, 'preview': '', 'description': '模板5', 'layout_file': 'template4.lay', 'hover': False, 'data': []}
         ]
+        # openai.api_key = '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'
         for layout in self._layouts:
             for item in layout['data']:
-                temp_ff = copy.deepcopy(font_family)
-                if item['type'] == 'title':
+                temp_ff = copy.deepcopy(style['earth_1'])
+                if item['type'] == 'background':
+                    item['url'] = temp_ff['background']['url']
+                    item['opacity'] = temp_ff['background']['opacity']
+                    # background = openai.Image.create(
+                    #     prompt=title,
+                    #     n=1,
+                    #     size='1024x1024'
+                    # )
+                    # # TODO: 解析背景图片url
+                    # item['url'] = background['data'][0]['url']
+                    # print(item['url'])
+                elif item['type'] == 'title':
                     item['content'] = title
+                    item['font'] = temp_ff['title']
                 elif item['type'] == 'rect' and item['rect_type'] == 'info':
                     content = []
                     info_num = len(info_list)
@@ -180,23 +161,35 @@ class Poster:
                     for info_item in info_list:
                         w = len(English2Chinese[info_item]) * char_width
                         content.append({'type': "text", 'content': English2Chinese[info_item], 'info_type': 'default',
-                                        'w': int(w * 1.5), 'h': h, 'x': item['x'], 'y': y, 'font': temp_ff['info_title']})
+                                        'w': int(w * 1.5), 'h': h, 'x': item['x'], 'y': y,
+                                        'font': temp_ff['info_title']})
                         content.append({'type': "text", 'content': info_list[info_item], 'info_type': info_item,
-                                        'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y, 'font': temp_ff['info']})
+                                        'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y,
+                                        'font': temp_ff['info']})
                         y += h
                     item['content'] = content
+                    item['backgroundColor'] = temp_ff['rect']['backgroundColor']
+                    item['opacity'] = temp_ff['rect']['opacity']
                 elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
                     content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
-                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': temp_ff['ab&intro_title']},
+                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
+                                'font': temp_ff['ab&intro_title']},
                                {'type': "text", 'content': abstract, 'info_type': 'abstract',
-                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': temp_ff['ab&intro']}]
+                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
+                                'font': temp_ff['ab&intro']}]
                     item['content'] = content
+                    item['backgroundColor'] = temp_ff['rect']['backgroundColor']
+                    item['opacity'] = temp_ff['rect']['opacity']
                 elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
                     content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
-                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': temp_ff['ab&intro_title']},
+                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
+                                'font': temp_ff['ab&intro_title']},
                                {'type': "text", 'content': introduction, 'info_type': 'introduction',
-                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': temp_ff['ab&intro']}]
+                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
+                                'font': temp_ff['ab&intro']}]
                     item['content'] = content
+                    item['backgroundColor'] = temp_ff['rect']['backgroundColor']
+                    item['opacity'] = temp_ff['rect']['opacity']
                 elif item['type'] == 'img' and item['img_type'] == 'photo':
                     item['url'] = photo_url
                 elif item['type'] == 'img' and item['img_type'] == 'customized_logo':
@@ -237,7 +230,11 @@ class Poster:
         if template_data[0]['type'] == 'background':
             bg_alpha = template_data[0]['opacity']
             url_list = template_data[0]['url'].split('/')
-            bg_img = del_alpha_channel(scale(cv2.imread(f'static/images/{url_list[-2]}/{url_list[-1]}', cv2.IMREAD_UNCHANGED), self.canvas_width, self.canvas_height))
+            bg_img = del_alpha_channel(
+                scale(cv2.imread(f'static/backgrounds/{url_list[-2]}/{url_list[-1]}', cv2.IMREAD_UNCHANGED),
+                      self.canvas_width, self.canvas_height))
+            # res = urllib.request.urlopen(template_data[0]['url'])
+            # bg_img = cv2.imdecode(np.asarray(bytearray(res.read()), dtype="uint8"), cv2.IMREAD_COLOR)
             self._canvas = np.full(fill_value=255, shape=bg_img.shape, dtype=np.uint8)
             self._canvas = cv2.addWeighted(bg_img, bg_alpha, self._canvas, 1 - bg_alpha, 1)
 
@@ -255,7 +252,8 @@ class Poster:
                 x2 = item['x'] + item['w']
                 y2 = item['y'] + item['h']
                 url_list = item['url'].split('/')
-                img = scale(cv2.imread(f'static/images/{url_list[-2]}/{url_list[-1]}', cv2.IMREAD_UNCHANGED), item['w'], item['h'])
+                img = scale(cv2.imread(f'static/images/{url_list[-2]}/{url_list[-1]}', cv2.IMREAD_UNCHANGED), item['w'],
+                            item['h'])
                 self._canvas = paste_img(self._canvas, img, y1, y2, x1, x2)
         cv2.imwrite('assets/temp/temp_poster.png', self._canvas)
 
@@ -265,8 +263,10 @@ class Poster:
         # 添加海报标题与讲座基础信息
         for text in template_data:
             if text['type'] == 'title':
-                font_path = font_path_global['bold'] if text['font']['fontWeight'] == 'bold' else font_path_global['normal']
-                font_size = add_text(img=self._canvas, text=text['content'], max_width=text['w'], max_height=text['h'], font_path=font_path,
+                font_path = font_path_global['bold'] if text['font']['fontWeight'] == 'bold' else font_path_global[
+                    'normal']
+                font_size = add_text(img=self._canvas, text=text['content'], max_width=text['w'], max_height=text['h'],
+                                     font_path=font_path,
                                      x=text['x'], y=text['y'], font_size=int(text['font']['fontSize'][:-2]),
                                      font_color=hex2RGB(text['font']['color']), count=1)
                 text['font']['fontSize'] = f'{font_size}px'
@@ -274,13 +274,17 @@ class Poster:
             elif text['type'] == 'rect':
                 if text['rect_type'] == 'info':
                     for item in text['content']:
-                        font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else font_path_global['normal']
-                        add_one_line_text(img=self._canvas, text=item['content'], font_path=font_path, x=item['x'], y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
+                        font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else \
+                        font_path_global['normal']
+                        add_one_line_text(img=self._canvas, text=item['content'], font_path=font_path, x=item['x'],
+                                          y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
                                           font_color=hex2RGB(item['font']['color']))
                 else:
                     for item in text['content']:
-                        font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else font_path_global['normal']
-                        font_size = add_text(img=self._canvas, text=item['content'], max_width=item['w'], max_height=item['h'], font_path=font_path,
+                        font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else \
+                        font_path_global['normal']
+                        font_size = add_text(img=self._canvas, text=item['content'], max_width=item['w'],
+                                             max_height=item['h'], font_path=font_path,
                                              x=item['x'], y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
                                              font_color=hex2RGB(item['font']['color']), count=1)
                         item['font']['fontSize'] = f'{font_size}px'
@@ -446,41 +450,20 @@ def scale(img, target_width, target_height):
 
 if __name__ == '__main__':
     pass
-    # title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
-    # time = '2022年11月16日(周三) 9:30-11.30'
-    # location = '第一科研楼报告厅'
-    # reporter = '陈明 副教授/杜克大学'
-    # inviter = '原佩琦 南方科技大学'
-    # meeting_num = '123-456-789'
-    # abstract = 'We present a novel method for blending hierarchical layouts with semantic labels. ' \
-    #            'The core of our method is a hierarchical structure correspondence algorithm, ' \
-    #            'which recursively finds optimal substructure correspondences, ' \
-    #            'achieving a globally optimal correspondence between a pair of hierarchical layouts. ' \
-    #            'This correspondence is consistent with the structures of both layouts, ' \
-    #            'allowing us to define the union of the layouts’ structures. ' \
-    #            'The resulting compound structure helps extract intermediate layout structures, ' \
-    #            'from which blended layouts can be generated via an optimization approach.'
-    # introduction = 'We present a novel method for blending hierarchical layouts with semantic labels. ' \
-    #                'The core of our method is a hierarchical structure correspondence algorithm, ' \
-    #                'which recursively finds optimal substructure correspondences, ' \
-    #                'achieving a globally optimal correspondence between a pair of hierarchical layouts. ' \
-    #                'This correspondence is consistent with the structures of both layouts, ' \
-    #                'allowing us to define the union of the layouts’ structures. ' \
-    #                'The resulting compound structure helps extract intermediate layout structures, ' \
-    #                'from which blended layouts can be generated via an optimization approach.'
-    # bg_path = 'static/images/test_user/bg.png'
-    # logo_1_path = 'static/images/test_user/school_logo.png'
-    # logo_2_path = 'static/images/test_user/department_logo.png'
-    # photo_path = 'static/images/test_user/photo.png'
-    # qrcode_path = 'static/images/test_user/qrcode.png'
-    # info_list = {'time': time, 'location': location, 'reporter': reporter}
-    # if inviter:
-    #     info_list['inviter'] = inviter
-    # if meeting_num:
-    #     info_list['meeting_num'] = meeting_num
-    # poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction,
-    #                 bg_path=bg_path, logo_1_path=logo_1_path, logo_2_path=logo_2_path, qrcode_path=qrcode_path,
-    #                 photo_path=photo_path)
-    # for index in range(len(poster.layouts)):
-    #     poster.generate(f'static/templates/test_user/template{index}.png', index)
-    #     poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
+    title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
+    time = '2022年11月16日(周三) 9:30-11.30'
+    location = '第一科研楼报告厅'
+    reporter = '陈明 副教授/杜克大学'
+    inviter = '原佩琦 南方科技大学'
+    meeting_num = '123-456-789'
+    abstract = '这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要。'
+    introduction = '这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍。'
+    info_list = {'time': time, 'location': location, 'reporter': reporter}
+    if inviter:
+        info_list['inviter'] = inviter
+    if meeting_num:
+        info_list['meeting_num'] = meeting_num
+    poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
+    for index in range(len(poster.layouts)):
+        poster.generate(f'static/templates/test_user/template{index}.png', index)
+        poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
