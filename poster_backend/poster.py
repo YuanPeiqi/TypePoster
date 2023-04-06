@@ -3,10 +3,7 @@ import copy
 import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
-from poster_backend.config import font_path_global, style, English2Chinese
-
-import openai
-import urllib.request
+from poster_backend.config import font_path_global, style_list, English2Chinese, hierarchical_layout_list
 
 warnings.filterwarnings("ignore")
 
@@ -29,173 +26,74 @@ class Poster:
             qrcode_url = 'http://localhost:5000/get_image/test_user/qrcode.png'
         self._canvas_width = canvas_width
         self._canvas_height = canvas_height
-        self._canvas = np.full(fill_value=255, shape=(self.canvas_height, self.canvas_width, 4), dtype=np.uint8)
-        self._layouts = [
-            {
-                'id': 0,
-                'preview': '',
-                'description': '模板1',
-                'layout_file': 'template0.lay',
-                'hover': False,
-                'data': [
-                    {'type': "background", 'opacity': 0.8, 'url': "http://localhost:5000/get_image/test_user/bg.png"},
-                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#f1f2f6', 'opacity': 0.6, 'w': 646,
-                     'h': 220, 'x': 17, 'y': 443, 'content': []},
-                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#f1f2f6', 'opacity': 0.6,
-                     'w': 646, 'h': 220, 'x': 17, 'y': 673, 'content': []},
-                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#f1f2f6', 'opacity': 0.6, 'w': 465,
-                     'h': 210, 'x': 198, 'y': 213, 'content': []},
-                    {'type': "rect", 'rect_type': 'divider', 'backgroundColor': '#4b4b4b', 'opacity': 1, 'w': 646,
-                     'h': 4, 'x': 17, 'y': 666, 'content': []},
-                    {'type': "img", 'img_type': 'customized_logo',
-                     'url': "http://localhost:5000/get_image/test_user/department_logo.png",
-                     'w': 265, 'h': 55, 'x': 390, 'y': 17},
-                    {'type': "img", 'img_type': 'logo',
-                     'url': "http://localhost:5000/get_image/test_user/school_logo.png",
-                     'w': 212, 'h': 55, 'x': 17, 'y': 17},
-                    {'type': "img", 'img_type': 'photo', 'url': "http://localhost:5000/get_image/test_user/photo.png",
-                     'w': 160, 'h': 210, 'x': 17, 'y': 214},
-                    {'type': "img", 'img_type': 'qrcode', 'url': "http://localhost:5000/get_image/test_user/qrcode.png",
-                     'w': 106, 'h': 106, 'x': 542, 'y': 300},
-                    {'type': "title", 'content': '', 'w': 612, 'h': 120, 'x': 34, 'y': 76,},
-                ]
-            },
-            {
-                'id': 1,
-                'preview': '',
-                'description': '模板2',
-                'layout_file': 'template1.lay',
-                'hover': False,
-                'data': [
-                    {'type': "background", 'opacity': 0.8, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
-                    {'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF',
-                     'opacity': 0.6, 'w': 646, 'h': 205, 'x': 17, 'y': 320, 'content': []},
-                    {'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF',
-                     'opacity': 0.6, 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'content': []},
-                    {'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF',
-                     'opacity': 0.6, 'w': 480, 'h': 136, 'x': 180, 'y': 170, 'content': []},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
-                     'img_type': 'customized_logo',
-                     'w': 265, 'h': 55, 'x': 390, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
-                     'img_type': 'logo',
-                     'w': 212, 'h': 55, 'x': 10, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'img_type': 'photo',
-                     'w': 150, 'h': 230, 'x': 17, 'y': 76},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'img_type': 'qrcode',
-                     'w': 106, 'h': 106, 'x': 542, 'y': 190},
-                    {'type': "title", 'content': '', 'w': 460, 'h': 80, 'x': 180, 'y': 76},
-                ]
-            },
-            {
-                'id': 2,
-                'preview': '',
-                'description': '模板3',
-                'layout_file': 'template2.lay',
-                'hover': False,
-                'data': [
-                    {'type': "background", 'opacity': 0.8, 'url': "http://localhost:5000/get_image/test_user/bg2.png"},
-                    {'type': "rect", 'rect_type': 'abstract', 'w': 646, 'h': 200, 'x': 17, 'y': 320, 'contenet': []},
-                    {'type': "rect", 'rect_type': 'introduction', 'w': 646, 'h': 350, 'x': 17, 'y': 540, 'contenet': []},
-                    {'type': "rect", 'rect_type': 'info', 'w': 480, 'h': 146, 'x': 17, 'y': 160, 'contenet': []},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
-                     'img_type': 'customized_logo',
-                     'w': 265, 'h': 55, 'x': 390, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
-                     'img_type': 'logo',
-                     'w': 212, 'h': 55, 'x': 10, 'y': 10},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/photo.png", 'img_type': 'photo',
-                     'w': 150, 'h': 230, 'x': 510, 'y': 76},
-                    {'type': "img", 'url': "http://localhost:5000/get_image/test_user/qrcode.png", 'img_type': 'qrcode',
-                     'w': 106, 'h': 106, 'x': 375, 'y': 190},
-                    {
-                        'type': "title", 'content': '',
-                        'font': {
-                            'fontSize': '22px',
-                            'color': '#000000',
-                            'fontWeight': 'bold',
-                            'textAlign': 'left',
-                            'fontStyle': '',
-                            'letterSpacing': 0,
-                            'lineHeight': '150%'
-                        },
-                        'w': 460, 'h': 60, 'x': 17, 'y': 76
-                    }
-                ]
-            },
-            # {'id': 3, 'preview': '', 'description': '模板4', 'layout_file': 'template3.lay', 'hover': False, 'data': []},
-            # {'id': 4, 'preview': '', 'description': '模板5', 'layout_file': 'template4.lay', 'hover': False, 'data': []}
-        ]
-        # openai.api_key = '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'
-        for layout in self._layouts:
-            for item in layout['data']:
-                temp_ff = copy.deepcopy(style['earth_1'])
-                if item['type'] == 'background':
-                    item['url'] = temp_ff['background']['url']
-                    item['opacity'] = temp_ff['background']['opacity']
-                    # background = openai.Image.create(
-                    #     prompt=title,
-                    #     n=1,
-                    #     size='1024x1024'
-                    # )
-                    # # TODO: 解析背景图片url
-                    # item['url'] = background['data'][0]['url']
-                    # print(item['url'])
-                elif item['type'] == 'title':
-                    item['content'] = title
-                    item['font'] = temp_ff['title']
-                elif item['type'] == 'rect' and item['rect_type'] == 'info':
-                    content = []
-                    info_num = len(info_list)
-                    h = int(item['h'] / info_num)
-                    y = item['y']
-                    font_size = 1
-                    while True:
-                        font = ImageFont.truetype(font_path_global['bold'], font_size)
-                        char_width, char_height = font.getsize('中')
-                        if char_height * 1.8 >= h or font_size >= 22:
-                            temp_ff['info_title']['fontSize'] = f"{font_size}px"
-                            temp_ff['info']['fontSize'] = f"{font_size}px"
-                            break
-                        font_size += 1
-                    for info_item in info_list:
-                        w = len(English2Chinese[info_item]) * char_width
-                        content.append({'type': "text", 'content': English2Chinese[info_item], 'info_type': 'default',
-                                        'w': int(w * 1.5), 'h': h, 'x': item['x'], 'y': y,
-                                        'font': temp_ff['info_title']})
-                        content.append({'type': "text", 'content': info_list[info_item], 'info_type': info_item,
-                                        'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y,
-                                        'font': temp_ff['info']})
-                        y += h
-                    item['content'] = content
-                    item['backgroundColor'] = temp_ff['rect']['backgroundColor']
-                    item['opacity'] = temp_ff['rect']['opacity']
-                elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
-                    content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
-                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
-                                'font': temp_ff['ab&intro_title']},
-                               {'type': "text", 'content': abstract, 'info_type': 'abstract',
-                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
-                                'font': temp_ff['ab&intro']}]
-                    item['content'] = content
-                    item['backgroundColor'] = temp_ff['rect']['backgroundColor']
-                    item['opacity'] = temp_ff['rect']['opacity']
-                elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
-                    content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
-                                'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
-                                'font': temp_ff['ab&intro_title']},
-                               {'type': "text", 'content': introduction, 'info_type': 'introduction',
-                                'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
-                                'font': temp_ff['ab&intro']}]
-                    item['content'] = content
-                    item['backgroundColor'] = temp_ff['rect']['backgroundColor']
-                    item['opacity'] = temp_ff['rect']['opacity']
-                elif item['type'] == 'img' and item['img_type'] == 'photo':
-                    item['url'] = photo_url
-                elif item['type'] == 'img' and item['img_type'] == 'customized_logo':
-                    item['url'] = logo_url
-                elif item['type'] == 'img' and item['img_type'] == 'qrcode':
-                    item['url'] = qrcode_url
+        self._canvas = np.full(fill_value=255, shape=(self._canvas_height, self._canvas_width, 4), dtype=np.uint8)
+        self._layouts = []
+        for style_name in style_list.keys():
+            layout_list = copy.deepcopy(hierarchical_layout_list)
+            for layout in layout_list:
+                style = copy.deepcopy(style_list[style_name])
+                for item in layout['data']:
+                    if item['type'] == 'background':
+                        item['url'] = style['background']['url']
+                        item['opacity'] = style['background']['opacity']
+                    elif item['type'] == 'title':
+                        item['content'] = title
+                        item['font'] = style['title']
+                    elif item['type'] == 'rect' and item['rect_type'] == 'info':
+                        content = []
+                        info_num = len(info_list)
+                        h = int(item['h'] / info_num)
+                        y = item['y']
+                        font_size = 1
+                        while True:
+                            font = ImageFont.truetype(font_path_global['bold'], font_size)
+                            char_width, char_height = font.getsize('中')
+                            if char_height * 1.8 >= h or font_size >= 22:
+                                style['info_title']['fontSize'] = f"{font_size}px"
+                                style['info']['fontSize'] = f"{font_size}px"
+                                break
+                            font_size += 1
+                        for info_item in info_list:
+                            w = len(English2Chinese[info_item]) * char_width
+                            content.append({'type': "text", 'content': English2Chinese[info_item], 'info_type': 'default',
+                                            'w': int(w * 1.5), 'h': h, 'x': item['x'], 'y': y,
+                                            'font': style['info_title']})
+                            content.append({'type': "text", 'content': info_list[info_item], 'info_type': info_item,
+                                            'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y,
+                                            'font': style['info']})
+                            y += h
+                        item['content'] = content
+                        item['backgroundColor'] = style['rect']['backgroundColor']
+                        item['opacity'] = style['rect']['opacity']
+                    elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
+                        content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
+                                    'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
+                                    'font': style['ab&intro_title']},
+                                   {'type': "text", 'content': abstract, 'info_type': 'abstract',
+                                    'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
+                                    'font': style['ab&intro']}]
+                        item['content'] = content
+                        item['backgroundColor'] = style['rect']['backgroundColor']
+                        item['opacity'] = style['rect']['opacity']
+                    elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
+                        content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
+                                    'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
+                                    'font': style['ab&intro_title']},
+                                   {'type': "text", 'content': introduction, 'info_type': 'introduction',
+                                    'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
+                                    'font': style['ab&intro']}]
+                        item['content'] = content
+                        item['backgroundColor'] = style['rect']['backgroundColor']
+                        item['opacity'] = style['rect']['opacity']
+                    elif item['type'] == 'img' and item['img_type'] == 'photo':
+                        item['url'] = photo_url
+                    elif item['type'] == 'img' and item['img_type'] == 'customized_logo':
+                        item['url'] = logo_url
+                    elif item['type'] == 'img' and item['img_type'] == 'logo':
+                        item['url'] = "http://localhost:5000/get_image/test_user/school_logo.png"
+                    elif item['type'] == 'img' and item['img_type'] == 'qrcode':
+                        item['url'] = qrcode_url
+            self._layouts += layout_list
 
     @property
     def layouts(self):
@@ -223,19 +121,22 @@ class Poster:
 
     def generate(self, save_path, layout_index):
         # 调整背景透明度
+        self._layouts[layout_index]['id'] = layout_index
+        self._layouts[layout_index]['description'] += str(layout_index)
         template_data = self._layouts[layout_index]['data']
         if not template_data:
             return
-        self._canvas = np.full(fill_value=255, shape=(self.canvas_height, self.canvas_width, 3), dtype=np.uint8)
+        self._canvas = np.full(fill_value=255, shape=(self._canvas_height, self._canvas_width, 3), dtype=np.uint8)
         if template_data[0]['type'] == 'background':
             bg_alpha = template_data[0]['opacity']
             url_list = template_data[0]['url'].split('/')
             bg_img = del_alpha_channel(
                 scale(cv2.imread(f'static/backgrounds/{url_list[-2]}/{url_list[-1]}', cv2.IMREAD_UNCHANGED),
-                      self.canvas_width, self.canvas_height))
-            # res = urllib.request.urlopen(template_data[0]['url'])
-            # bg_img = cv2.imdecode(np.asarray(bytearray(res.read()), dtype="uint8"), cv2.IMREAD_COLOR)
-            self._canvas = np.full(fill_value=255, shape=bg_img.shape, dtype=np.uint8)
+                      self._canvas_width, self._canvas_height))
+            if is_dark(bg_img):
+                self._canvas = np.full(fill_value=0, shape=bg_img.shape, dtype=np.uint8)
+            else:
+                self._canvas = np.full(fill_value=255, shape=bg_img.shape, dtype=np.uint8)
             self._canvas = cv2.addWeighted(bg_img, bg_alpha, self._canvas, 1 - bg_alpha, 1)
 
         # 添加矩形
@@ -275,14 +176,14 @@ class Poster:
                 if text['rect_type'] == 'info':
                     for item in text['content']:
                         font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else \
-                        font_path_global['normal']
+                            font_path_global['normal']
                         add_one_line_text(img=self._canvas, text=item['content'], font_path=font_path, x=item['x'],
                                           y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
                                           font_color=hex2RGB(item['font']['color']))
                 else:
                     for item in text['content']:
                         font_path = font_path_global['bold'] if item['font']['fontWeight'] == 'bold' else \
-                        font_path_global['normal']
+                            font_path_global['normal']
                         font_size = add_text(img=self._canvas, text=item['content'], max_width=item['w'],
                                              max_height=item['h'], font_path=font_path,
                                              x=item['x'], y=item['y'], font_size=int(item['font']['fontSize'][:-2]),
@@ -290,6 +191,31 @@ class Poster:
                         item['font']['fontSize'] = f'{font_size}px'
         # 保存最终版海报
         self._canvas.save(save_path)
+
+
+def is_dark(img):
+    # 把图片转换为灰度图
+    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # 获取灰度图矩阵的行数和列数
+    r, c = gray_img.shape[:2]
+    dark_sum = 0  # 偏暗的像素 初始化为0个
+    pixel_sum = r * c  # 整个弧度图的像素个数为r*c
+
+    # 遍历灰度图的所有像素
+    for row in gray_img:
+        for column in row:
+            if column < 100:  # 人为设置的超参数,表示0~39的灰度值为暗
+                dark_sum += 1
+    dark_prop = dark_sum / pixel_sum
+    # print("dark_sum:" + str(dark_sum))
+    # print("pixel_sum:" + str(pixel_sum))
+    # print("dark_prop = dark_sum / pixel_sum:" + str(dark_prop))
+    if dark_prop >= 0.5:
+        # print("Background is dark")
+        return True
+    else:
+        # print("Background is bright")
+        return False
 
 
 def hex2RGB(hex_code):
@@ -448,22 +374,22 @@ def scale(img, target_width, target_height):
     return img
 
 
-if __name__ == '__main__':
-    pass
-    title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
-    time = '2022年11月16日(周三) 9:30-11.30'
-    location = '第一科研楼报告厅'
-    reporter = '陈明 副教授/杜克大学'
-    inviter = '原佩琦 南方科技大学'
-    meeting_num = '123-456-789'
-    abstract = '这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要。'
-    introduction = '这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍。'
-    info_list = {'time': time, 'location': location, 'reporter': reporter}
-    if inviter:
-        info_list['inviter'] = inviter
-    if meeting_num:
-        info_list['meeting_num'] = meeting_num
-    poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
-    for index in range(len(poster.layouts)):
-        poster.generate(f'static/templates/test_user/template{index}.png', index)
-        poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
+# if __name__ == '__main__':
+#     pass
+#     title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
+#     time = '2022年11月16日(周三) 9:30-11.30'
+#     location = '第一科研楼报告厅'
+#     reporter = '陈明 副教授/杜克大学'
+#     inviter = '原佩琦 南方科技大学'
+#     meeting_num = '123-456-789'
+#     abstract = '这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要。'
+#     introduction = '这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍。'
+#     info_list = {'time': time, 'location': location, 'reporter': reporter}
+#     if inviter:
+#         info_list['inviter'] = inviter
+#     if meeting_num:
+#         info_list['meeting_num'] = meeting_num
+#     poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
+#     for index in range(len(poster.layouts)):
+#         poster.generate(f'static/templates/test_user/template{index}.png', index)
+#         poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'

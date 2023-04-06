@@ -124,6 +124,7 @@ export default {
     }
   },
   created() {
+    this.renderPoster(0)
   },
   methods: {
     ...mapActions(['addItem', 'addAssistWidget', 'addBackground', 'removeAllAssistWidgets', 'removeBackground', 'removeAllItems']),
@@ -231,11 +232,18 @@ export default {
         cancelButtonText: '取消',
         type: 'info'
       }).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '正在切换海报，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
+        this.renderPoster(index)
+        loading.close();
         this.$message({
           type: 'success',
           message: `已切换至 "${this.poster_list[index].description}"`
         });
-        this.renderPoster(index)
       }).catch(action => {
         this.$message({
           type: action === 'cancel' ? 'info' : 'error',

@@ -3,21 +3,21 @@ import copy
 import warnings
 
 from PIL import ImageFont
-
+from poster_backend.config import font_path_global, style_list, English2Chinese, CONTENT_TYPE
 warnings.filterwarnings("ignore")
-CONTENT_TYPE = ['non-leaf', 'padding', 'title', 'abstract', 'introduction', 'info', 'logo', 'photo']
-font_path_global = {'bold': 'C:\\Windows\\Fonts\\msyhbd.ttc', 'normal': 'C:\\Windows\\Fonts\\msyh.ttc'}
-font_family = {
-    'info': {'fontSize': '0px', 'color': '#000000', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
-             'letterSpacing': 0, 'lineHeight': '100%'},
-    'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
-                   'letterSpacing': 0, 'lineHeight': '100%'},
-    'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#595959', 'fontWeight': 'bold',
-                 'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
-    'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#000000', 'fontWeight': 'bold',
-                       'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'}}
-English2Chinese = {'time': '时间:', 'location': '地点:', 'reporter': '报告人:', 'inviter': '邀请人:', 'meeting_num': '腾讯会议号:',
-                   'abstract': '报告摘要', 'introduction': '报告人简介'}
+
+# font_path_global = {'bold': 'C:\\Windows\\Fonts\\msyhbd.ttc', 'normal': 'C:\\Windows\\Fonts\\msyh.ttc'}
+# font_family = {
+#     'info': {'fontSize': '0px', 'color': '#000000', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
+#              'letterSpacing': 0, 'lineHeight': '100%'},
+#     'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
+#                    'letterSpacing': 0, 'lineHeight': '100%'},
+#     'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#595959', 'fontWeight': 'bold',
+#                  'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+#     'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#000000', 'fontWeight': 'bold',
+#                        'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'}}
+# English2Chinese = {'time': '时间:', 'location': '地点:', 'reporter': '报告人:', 'inviter': '邀请人:', 'meeting_num': '腾讯会议号:',
+#                    'abstract': '报告摘要', 'introduction': '报告人简介'}
 
 
 def json2lay(layout, user):
@@ -80,17 +80,26 @@ def lay2json(output_dir, filename, bg1, bg2):
         return json
 
 
-def add_content(layouts, info_form):
+def add_content(layouts, info_form, style1, style2):
     info_list = {'time': info_form['time'], 'location': info_form['location'], 'reporter': info_form['reporter']}
     if info_form['inviter']:
         info_list['inviter'] = info_form['inviter']
     if info_form['meeting_num']:
         info_list['meeting_num'] = info_form['meeting_num']
+    count = 0
     for layout in layouts:
         for item in layout['data']:
-            temp_ff = copy.deepcopy(font_family)
+            count += 1
+            if count <= 5:
+                style = copy.deepcopy(style_list[style1])
+            else:
+                style = copy.deepcopy(style_list[style2])
             if item['type'] == 'title':
                 item['content'] = info_form['title']
+                item['font'] = style['title']
+            elif item['type'] == 'background':
+                item['url'] = style['background']['url']
+                item['opacity'] = style['background']['opacity']
             elif item['type'] == 'subtitle':
                 item['content'] = '欢迎全校师生参加！'
                 item['type'] = 'title'
@@ -104,29 +113,29 @@ def add_content(layouts, info_form):
                     font = ImageFont.truetype(font_path_global['bold'], font_size)
                     char_width, char_height = font.getsize('中')
                     if char_height * 1.8 >= h or font_size >= 22:
-                        temp_ff['info_title']['fontSize'] = f"{font_size}px"
-                        temp_ff['info']['fontSize'] = f"{font_size}px"
+                        style['info_title']['fontSize'] = f"{font_size}px"
+                        style['info']['fontSize'] = f"{font_size}px"
                         break
                     font_size += 1
                 for info_item in info_list:
                     w = len(English2Chinese[info_item]) * char_width
                     content.append({'type': "text", 'content': English2Chinese[info_item], 'info_type': 'default',
-                                    'w': int(w * 1.4), 'h': h, 'x': item['x'], 'y': y, 'font': temp_ff['info_title']})
+                                    'w': int(w * 1.4), 'h': h, 'x': item['x'], 'y': y, 'font': style['info_title']})
                     content.append({'type': "text", 'content': info_list[info_item], 'info_type': info_item,
-                                    'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y, 'font': temp_ff['info']})
+                                    'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y, 'font': style['info']})
                     y += h
                 item['content'] = content
             elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
                 content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
-                            'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': temp_ff['ab&intro_title']},
+                            'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': style['ab&intro_title']},
                            {'type': "text", 'content': info_form['abstract'], 'info_type': 'abstract',
-                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': temp_ff['ab&intro']}]
+                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': style['ab&intro']}]
                 item['content'] = content
             elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
                 content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
-                            'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': temp_ff['ab&intro_title']},
+                            'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': style['ab&intro_title']},
                            {'type': "text", 'content': info_form['introduction'], 'info_type': 'introduction',
-                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': temp_ff['ab&intro']}]
+                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': style['ab&intro']}]
                 item['content'] = content
     return layouts
 
@@ -137,7 +146,7 @@ class Blender:
         self.user = user
         self.result_layouts = []
 
-    def blend(self, lay1, lay2, bg1, bg2):
+    def blend(self, lay1, lay2, bg1, bg2, style1, style2):
         self.result_layouts.clear()
         path1 = json2lay(layout=lay1, user=self.user)
         path2 = json2lay(layout=lay2, user=self.user)
@@ -147,7 +156,7 @@ class Blender:
         for index in range(0, len(layout_path_list)):
             json = lay2json(out_path, layout_path_list[index], bg1, bg2)
             self.result_layouts.append(json)
-        self.result_layouts = add_content(self.result_layouts, self.info_form)
+        self.result_layouts = add_content(self.result_layouts, self.info_form, style1, style2)
         return self.result_layouts
 
 

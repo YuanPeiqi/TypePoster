@@ -1,13 +1,14 @@
+import base64
 import datetime
 import os
 import random
 import uuid
-import base64
-from flask import Flask, request, jsonify, Response
-from flask_cors import CORS, cross_origin
+from tqdm import tqdm
 
 import layout_blending
 import poster
+from flask import Flask, request, jsonify, Response
+from flask_cors import CORS
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
@@ -52,11 +53,13 @@ def blend_layouts():
     lay2 = request.values.get('lay2')
     bg1 = request.values.get('bg1')
     bg2 = request.values.get('bg2')
+    style1 = request.values.get('style1')
+    style2 = request.values.get('style2')
     info_form = {'title': request.values.get('title'), 'time': request.values.get('time'), 'location': request.values.get('location'),
                  'reporter': request.values.get('reporter'), 'inviter': request.values.get('inviter'), 'meeting_num': request.values.get('meeting_num'),
                  'abstract': request.values.get('abstract'), 'introduction': request.values.get('introduction')}
     blender = layout_blending.Blender(info_form, user_id)
-    blending_results = blender.blend(lay1, lay2, bg1, bg2)
+    blending_results = blender.blend(lay1, lay2, bg1, bg2, style1, style2)
     blending_results[0]['show'] = True
     generator = poster.Poster()
     generator.layouts = blending_results
@@ -91,7 +94,7 @@ def submit_poster_info():
                               logo_url=logo_url, photo_url=photo_url, qrcode_url=qrcode_url)
     if not os.path.exists(f'static/templates/{user_id}'):
         os.mkdir(f'static/templates/{user_id}')
-    for index in range(len(generator.layouts)):
+    for index in tqdm(range(len(generator.layouts))):
         generator.generate(f'static/templates/test_user/template{index}.png', index)
         generator.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/{user_id}/template{index}.png'
     return jsonify(generator.layouts)

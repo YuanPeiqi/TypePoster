@@ -43,6 +43,7 @@ const store = new Vuex.Store({
     mutations: {
         setPosterList(state, value) {
             state.poster_list = value
+            console.log(state.poster_list)
         },
         setBlendingList(state, value) {
             state.blending_list = value
