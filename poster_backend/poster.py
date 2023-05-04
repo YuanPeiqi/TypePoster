@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 from poster_backend.config import font_path_global, style_list, English2Chinese, hierarchical_layout_list
-
+from tqdm import tqdm
 warnings.filterwarnings("ignore")
 
 
@@ -67,21 +67,21 @@ class Poster:
                         item['opacity'] = style['rect']['opacity']
                     elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
                         content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
-                                    'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
-                                    'font': style['ab&intro_title']},
+                                    'w': item['w'], 'h': 40, 'x': item['x'], 'y': item['y'],
+                                    'font': copy.deepcopy(style['ab&intro_title'])},
                                    {'type': "text", 'content': abstract, 'info_type': 'abstract',
                                     'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
-                                    'font': style['ab&intro']}]
+                                    'font': copy.deepcopy(style['ab&intro'])}]
                         item['content'] = content
                         item['backgroundColor'] = style['rect']['backgroundColor']
                         item['opacity'] = style['rect']['opacity']
                     elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
                         content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
-                                    'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'],
-                                    'font': style['ab&intro_title']},
+                                    'w': item['w'], 'h': 40, 'x': item['x'], 'y': item['y'],
+                                    'font': copy.deepcopy(style['ab&intro_title'])},
                                    {'type': "text", 'content': introduction, 'info_type': 'introduction',
                                     'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35,
-                                    'font': style['ab&intro']}]
+                                    'font': copy.deepcopy(style['ab&intro'])}]
                         item['content'] = content
                         item['backgroundColor'] = style['rect']['backgroundColor']
                         item['opacity'] = style['rect']['opacity']
@@ -317,10 +317,10 @@ def add_text(img, text, font_path, x, y, max_width, max_height, font_size, font_
     text_slice, char_width, char_height = split_text(text, max_width, font_path, font_size)
     spacing = round(0.5 * char_height)
     # 调小字体
-    if 1.5 * char_height * text_slice.count('\n') > max_height and count < 100:
+    if 1.5 * char_height * text_slice.count('\n') > max_height and count < 50:
         return add_text(img, text, font_path, x, y, max_width, max_height, font_size - 2, font_color, count + 1)
     # 调大字体
-    elif 1.5 * char_height * text_slice.count('\n') < 0.7 * max_height and count < 100:
+    elif 1.5 * char_height * text_slice.count('\n') < 0.8 * max_height and count < 50:
         return add_text(img, text, font_path, x, y, max_width, max_height, font_size + 2, font_color, count + 1)
         # font_size = int(font_size * 1.3)
         # text_slice, char_width, char_height = split_text(text, max_width, font_path, font_size)
@@ -374,22 +374,22 @@ def scale(img, target_width, target_height):
     return img
 
 
-# if __name__ == '__main__':
-#     pass
-#     title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
-#     time = '2022年11月16日(周三) 9:30-11.30'
-#     location = '第一科研楼报告厅'
-#     reporter = '陈明 副教授/杜克大学'
-#     inviter = '原佩琦 南方科技大学'
-#     meeting_num = '123-456-789'
-#     abstract = '这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要。'
-#     introduction = '这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍。'
-#     info_list = {'time': time, 'location': location, 'reporter': reporter}
-#     if inviter:
-#         info_list['inviter'] = inviter
-#     if meeting_num:
-#         info_list['meeting_num'] = meeting_num
-#     poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
-#     for index in range(len(poster.layouts)):
-#         poster.generate(f'static/templates/test_user/template{index}.png', index)
-#         poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
+if __name__ == '__main__':
+    pass
+    title = '文字到海报的端到端生成, 测试一下文字长度会不会超出海报'
+    time = '2022年11月16日(周三) 9:30-11.30'
+    location = '第一科研楼报告厅'
+    reporter = '陈明 副教授/杜克大学'
+    inviter = '原佩琦 南方科技大学'
+    meeting_num = '123-456-789'
+    abstract = '这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要，这是报告摘要这是报告摘要这是报告摘要。'
+    introduction = '这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍这是讲者介绍，这是讲者介绍，这是讲者介绍这是讲者介绍。'
+    info_list = {'time': time, 'location': location, 'reporter': reporter}
+    if inviter:
+        info_list['inviter'] = inviter
+    if meeting_num:
+        info_list['meeting_num'] = meeting_num
+    poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
+    for index in tqdm(range(len(poster.layouts))):
+        poster.generate(f'static/templates/test_user/template{index}.png', index)
+        poster.layouts[index]["preview"] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'

@@ -16,15 +16,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#f1f2f6', 'opacity': 0.7},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'business_2': {
         'background': {
@@ -34,15 +34,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#f1f2f6', 'opacity': 0.6},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'business_3': {
         'background': {
@@ -52,15 +52,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#f1f2f6', 'opacity': 0.5},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#2f3640', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'business_4': {
         'background': {
@@ -70,15 +70,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#f1f2f6', 'opacity': 0.7},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'business_5': {
         'background': {
@@ -88,15 +88,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#f1f2f6', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'tech_1': {
         'background': {
@@ -106,15 +106,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#f1f2f6', 'opacity': 0.7},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'tech_2': {
         'background': {
@@ -124,15 +124,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#dfe4ea', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'tech_3': {
         'background': {
@@ -142,15 +142,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#ffffff', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'tech_4': {
         'background': {
@@ -160,15 +160,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#ffffff', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'chemistry_1': {
         'background': {
@@ -178,15 +178,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#dfe4ea', 'opacity': 0.3},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#FFFFFF', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'chemistry_2': {
         'background': {
@@ -196,15 +196,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#dfe4ea', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'earth_1': {
         'background': {
@@ -214,15 +214,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#f1f2f6', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'chip_1': {
         'background': {
@@ -232,15 +232,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#f1f2f6', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'chip_2': {
         'background': {
@@ -250,15 +250,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#ffffff', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'cs_1': {
         'background': {
@@ -268,15 +268,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.6},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#ffffff', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'AI_1': {
         'background': {
@@ -286,15 +286,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.6},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#ffffff', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'bioscience_2': {
         'background': {
@@ -304,15 +304,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#f1f2f6', 'opacity': 0.6},
         'info': {'fontSize': '0px', 'color': '#2f3542', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#2f3542', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#2D5960', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'bioscience_3': {
         'background': {
@@ -322,15 +322,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.4},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#f1f2f6', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
     'bioscience_4': {
         'background': {
@@ -340,15 +340,15 @@ style_list = {
         },
         'rect': {'backgroundColor': '#4b4b4b', 'opacity': 0.3},
         'info': {'fontSize': '0px', 'color': '#f1f2f6', 'fontWeight': 'bold', 'textAlign': 'left',
-                 'letterSpacing': 0, 'lineHeight': '100%'},
+                 'letterSpacing': 2, 'lineHeight': '100%'},
         'info_title': {'fontSize': '0px', 'color': '#ffa502', 'fontWeight': 'bold', 'textAlign': 'left',
-                       'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'},
+                       'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '100%'},
         'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#f1f2f6', 'fontWeight': 'bold',
-                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
+                     'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 2, 'lineHeight': '135%'},
         'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#ffa502', 'fontWeight': 'bold',
-                           'textAlign': 'left', 'letterSpacing': 0, 'lineHeight': '100%'},
+                           'textAlign': 'left', 'letterSpacing': 2, 'lineHeight': '100%'},
         'title': {'fontSize': '34px', 'color': '#ffffff', 'fontWeight': 'bold', 'textAlign': 'left',
-                  'letterSpacing': 0, 'lineHeight': '150%'}
+                  'letterSpacing': 2, 'lineHeight': '150%'}
     },
 }
 
@@ -406,7 +406,7 @@ hierarchical_layout_list = [
             {'type': "img", 'img_type': 'logo', 'w': 212, 'h': 55, 'x': 10, 'y': 10},
             {'type': "img", 'img_type': 'photo', 'w': 150, 'h': 230, 'x': 510, 'y': 76},
             {'type': "img", 'img_type': 'qrcode', 'w': 106, 'h': 106, 'x': 375, 'y': 190},
-            {'type': "title", 'content': '', 'w': 460, 'h': 60, 'x': 17, 'y': 76}
+            {'type': "title", 'content': '', 'w': 460, 'h': 80, 'x': 17, 'y': 76}
         ]
     }
 ]

@@ -185,6 +185,8 @@ export default {
       }
     },
     add_text(data) {
+      // TODO
+      data.font.fontSize = (parseInt(data.font.fontSize) + 1).toString() + "px"
       let temp_text = new TextWidget({
         wState: {
           text: data.content,
@@ -319,8 +321,8 @@ export default {
     },
     handleSliderChange() {
       for (let i = 0; i < this.blending_list.length; i++) {
-        this.blending_list[i].show = this.blending_list[i].id === this.alpha
-        if (this.blending_list[i].id === this.alpha){
+        this.blending_list[i].show = this.blending_list[i].id === this.alpha / 10
+        if (this.blending_list[i].id === this.alpha / 10){
           this.templateBlended = this.blending_list[i]
         }
       }

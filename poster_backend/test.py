@@ -1,6 +1,18 @@
-import cv2
-import numpy as np
-bg_img = cv2.imread("C:\\Users\\Administrator\\Desktop\\db.png", cv2.IMREAD_UNCHANGED)
-a = np.full(fill_value=255, shape=bg_img.shape, dtype=np.uint8)
-a = cv2.addWeighted(bg_img, 0.5, a, 0.5, 1)
-cv2.imwrite('C:\\Users\\Administrator\\Desktop\\db2.png', a)
+try:
+    num = int(input("请输入一个正整数"))
+    if num < 0:
+        raise AttributeError
+    i = 1
+    sum = 0
+    while i <= int(num / 2):
+        if num % i == 0:
+            sum += i
+        i += 1
+    if sum == num:
+        print("完美数字")
+    else:
+        print("不是完美数字")
+except ValueError:
+    print("不是有效数字")
+except AttributeError:
+    print("请给出一个正数")

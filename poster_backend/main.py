@@ -53,8 +53,8 @@ def blend_layouts():
     lay2 = request.values.get('lay2')
     bg1 = request.values.get('bg1')
     bg2 = request.values.get('bg2')
-    style1 = request.values.get('style1')
-    style2 = request.values.get('style2')
+    style1 = bg1.split('/')[-1].split('.')[0]
+    style2 = bg2.split('/')[-1].split('.')[0]
     info_form = {'title': request.values.get('title'), 'time': request.values.get('time'), 'location': request.values.get('location'),
                  'reporter': request.values.get('reporter'), 'inviter': request.values.get('inviter'), 'meeting_num': request.values.get('meeting_num'),
                  'abstract': request.values.get('abstract'), 'introduction': request.values.get('introduction')}

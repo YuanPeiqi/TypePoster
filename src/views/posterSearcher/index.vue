@@ -25,7 +25,7 @@
       </el-radio-group>
       <el-form v-if="language" ref="chineseForm" :model="form" :rules="chineseRules" label-width="100px">
         <el-form-item label="报告主题" prop="title">
-          <el-input v-model="form.title" maxlength="30" show-word-limit type="textarea"></el-input>
+          <el-input v-model="form.title" maxlength="36" show-word-limit type="textarea"></el-input>
         </el-form-item>
         <el-form-item label="报告地点" prop="location">
           <el-select v-model="form.location" clearable filterable placeholder="请选择报告地点" style="width: 400px">
@@ -69,10 +69,10 @@
           <el-input v-model="form.inviter"></el-input>
         </el-form-item>
         <el-form-item label="报告摘要" prop="abstract">
-          <el-input v-model="form.abstract" maxlength="260" show-word-limit type="textarea"></el-input>
+          <el-input v-model="form.abstract" maxlength="240" show-word-limit type="textarea"></el-input>
         </el-form-item>
         <el-form-item label="报告人简介" prop="introduction">
-          <el-input v-model="form.introduction" maxlength="260" show-word-limit type="textarea"></el-input>
+          <el-input v-model="form.introduction" maxlength="240" show-word-limit type="textarea"></el-input>
         </el-form-item>
         <el-form-item label="线上会议号">
           <el-input v-model="form.meeting_num"></el-input>

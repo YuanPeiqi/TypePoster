@@ -6,19 +6,6 @@ from PIL import ImageFont
 from poster_backend.config import font_path_global, style_list, English2Chinese, CONTENT_TYPE
 warnings.filterwarnings("ignore")
 
-# font_path_global = {'bold': 'C:\\Windows\\Fonts\\msyhbd.ttc', 'normal': 'C:\\Windows\\Fonts\\msyh.ttc'}
-# font_family = {
-#     'info': {'fontSize': '0px', 'color': '#000000', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
-#              'letterSpacing': 0, 'lineHeight': '100%'},
-#     'info_title': {'fontSize': '0px', 'color': '#2D5960', 'fontWeight': 'bold', 'textAlign': 'left', 'fontStyle': '',
-#                    'letterSpacing': 0, 'lineHeight': '100%'},
-#     'ab&intro': {'fontSize': '14px', 'fontFamily': '', 'color': '#595959', 'fontWeight': 'bold',
-#                  'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '135%'},
-#     'ab&intro_title': {'fontSize': '19px', 'fontFamily': '', 'color': '#000000', 'fontWeight': 'bold',
-#                        'textAlign': 'left', 'fontStyle': '', 'letterSpacing': 0, 'lineHeight': '100%'}}
-# English2Chinese = {'time': '时间:', 'location': '地点:', 'reporter': '报告人:', 'inviter': '邀请人:', 'meeting_num': '腾讯会议号:',
-#                    'abstract': '报告摘要', 'introduction': '报告人简介'}
-
 
 def json2lay(layout, user):
     return f"static\\templates\\{user}\\layout_files\\{layout}"
@@ -40,30 +27,26 @@ def lay2json(output_dir, filename, bg1, bg2):
         title_flag = False
         for node in node_attributes.values():
             if CONTENT_TYPE[node[-2]] == 'title':
-                temp = {'type': 'title', 'content': '', 'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6], 'font': {
-                         'fontSize': '28px',
-                         'color': '#000000',
-                         'fontWeight': 'bold',
-                         'textAlign': 'left',
-                         'fontStyle': '',
-                         'letterSpacing': 0,
-                         'lineHeight': '158%'
-                     }}
+                temp = {'type': 'title', 'content': '', 'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6]}
                 if title_flag:
                     temp['type'] = 'subtitle'
+                    temp['y'] -= 10
+                    temp['h'] -= 10
+                else:
+                    temp['h'] += 20
                 data.append(temp)
                 title_flag = True
             elif CONTENT_TYPE[node[-2]] == 'abstract':
-                data.append({'type': "rect", 'rect_type': 'abstract', 'backgroundColor': '#FFFFFF', 'opacity': 0.6,
+                data.append({'type': "rect", 'rect_type': 'abstract',
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6], 'content': []})
             elif CONTENT_TYPE[node[-2]] == 'introduction':
-                data.append({'type': "rect", 'rect_type': 'introduction', 'backgroundColor': '#FFFFFF', 'opacity': 0.6,
+                data.append({'type': "rect", 'rect_type': 'introduction',
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6], 'content': []})
             elif CONTENT_TYPE[node[-2]] == 'logo':
-                data.append({'type': "img", 'img_type': 'logo', 'url': "http://localhost:5000/get_image/test_user/school_logo.png",
+                data.append({'type': "img", 'img_type': 'logo', 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6]})
             elif CONTENT_TYPE[node[-2]] == 'info':
-                data.append({'type': "rect", 'rect_type': 'info', 'backgroundColor': '#FFFFFF', 'opacity': 0.6,
+                data.append({'type': "rect", 'rect_type': 'info',
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6], 'content': []})
             elif CONTENT_TYPE[node[-2]] == 'photo':
                 data.append({'type': "img", 'img_type': 'photo', 'url': "http://localhost:5000/get_image/test_user/user_photo.png",
@@ -88,21 +71,22 @@ def add_content(layouts, info_form, style1, style2):
         info_list['meeting_num'] = info_form['meeting_num']
     count = 0
     for layout in layouts:
+        count += 1
         for item in layout['data']:
-            count += 1
             if count <= 5:
                 style = copy.deepcopy(style_list[style1])
             else:
                 style = copy.deepcopy(style_list[style2])
             if item['type'] == 'title':
                 item['content'] = info_form['title']
-                item['font'] = style['title']
+                item['font'] = copy.deepcopy(style['title'])
             elif item['type'] == 'background':
                 item['url'] = style['background']['url']
                 item['opacity'] = style['background']['opacity']
             elif item['type'] == 'subtitle':
                 item['content'] = '欢迎全校师生参加！'
                 item['type'] = 'title'
+                item['font'] = copy.deepcopy(style['title'])
             elif item['type'] == 'rect' and item['rect_type'] == 'info':
                 content = []
                 info_num = len(info_list)
@@ -120,23 +104,29 @@ def add_content(layouts, info_form, style1, style2):
                 for info_item in info_list:
                     w = len(English2Chinese[info_item]) * char_width
                     content.append({'type': "text", 'content': English2Chinese[info_item], 'info_type': 'default',
-                                    'w': int(w * 1.4), 'h': h, 'x': item['x'], 'y': y, 'font': style['info_title']})
+                                    'w': int(w * 1.6), 'h': h, 'x': item['x'], 'y': y, 'font': style['info_title']})
                     content.append({'type': "text", 'content': info_list[info_item], 'info_type': info_item,
                                     'w': item['w'] - w, 'h': h, 'x': item['x'] + w, 'y': y, 'font': style['info']})
                     y += h
                 item['content'] = content
+                item['backgroundColor'] = style['rect']['backgroundColor']
+                item['opacity'] = style['rect']['opacity']
             elif item['type'] == 'rect' and item['rect_type'] == 'abstract':
                 content = [{'type': "text", 'content': '报告摘要', 'info_type': 'default',
-                            'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': style['ab&intro_title']},
+                            'w': item['w'], 'h': 40, 'x': item['x'], 'y': item['y'], 'font': copy.deepcopy(style['ab&intro_title'])},
                            {'type': "text", 'content': info_form['abstract'], 'info_type': 'abstract',
-                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': style['ab&intro']}]
+                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': copy.deepcopy(style['ab&intro'])}]
                 item['content'] = content
+                item['backgroundColor'] = style['rect']['backgroundColor']
+                item['opacity'] = style['rect']['opacity']
             elif item['type'] == 'rect' and item['rect_type'] == 'introduction':
                 content = [{'type': "text", 'content': '报告人简介', 'info_type': 'default',
-                            'w': item['w'], 'h': 35, 'x': item['x'], 'y': item['y'], 'font': style['ab&intro_title']},
+                            'w': item['w'], 'h': 40, 'x': item['x'], 'y': item['y'], 'font': copy.deepcopy(style['ab&intro_title'])},
                            {'type': "text", 'content': info_form['introduction'], 'info_type': 'introduction',
-                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': style['ab&intro']}]
+                            'w': item['w'], 'h': item['h'] - 40, 'x': item['x'] + 5, 'y': item['y'] + 35, 'font': copy.deepcopy(style['ab&intro'])}]
                 item['content'] = content
+                item['backgroundColor'] = style['rect']['backgroundColor']
+                item['opacity'] = style['rect']['opacity']
     return layouts
 
 
