@@ -21,7 +21,7 @@
     <div class="card">
       <el-radio-group v-model="language" style="margin-bottom: 20px; margin-left: 15px">
         <el-radio-button :label="true">中文</el-radio-button>
-        <el-radio-button :label="false">English</el-radio-button>
+        <el-radio-button :label="false" disabled>English</el-radio-button>
       </el-radio-group>
       <el-form v-if="language" ref="chineseForm" :model="form" :rules="chineseRules" label-width="100px">
         <el-form-item label="报告主题" prop="title">
@@ -81,7 +81,7 @@
           <el-col :span="8">
             <el-upload
               :before-upload="beforeAvatarSuccess"
-              action="http://127.0.0.1:5000/upload"
+              action="http://172.18.25.80:5000/upload"
               :on-success="handlePhotoSuccess"
               multiple
               :file-list="fileList"
@@ -93,7 +93,7 @@
           <el-col :span="8">
             <el-upload
               :before-upload="beforeAvatarSuccess"
-              action="http://127.0.0.1:5000/upload"
+              action="http://172.18.25.80:5000/upload"
               :on-success="handleLogoSuccess"
               :show-file-list="false"
               list-type="picture">
@@ -103,13 +103,12 @@
           <el-col :span="8">
             <el-upload
               :before-upload="beforeAvatarSuccess"
-              action="http://127.0.0.1:5000/upload"
+              action="http://172.18.25.80:5000/upload"
               :on-success="handleQrcodeSuccess"
               :file-list="fileList"
               :show-file-list="false"
               list-type="picture">
             <el-button size="medium" type="primary">上传二维码</el-button>
-<!--            <div slot="tip" class="el-upload__tip">只能上传<b>jpg/png</b>文件，且不超过<b>2MB</b></div>-->
           </el-upload>
           </el-col>
         </el-form-item>
@@ -166,18 +165,6 @@
         <el-form-item label="Online">
           <el-input v-model="form.meeting_num"></el-input>
         </el-form-item>
-<!--        <el-form-item label="Photo">-->
-<!--          <el-upload-->
-<!--              :before-remove="beforeRemove"-->
-<!--              :file-list="fileList"-->
-<!--              :on-exceed="handleExceed"-->
-<!--              :on-preview="handlePreview"-->
-<!--              :on-remove="handleRemove"-->
-<!--              action="https://jsonplaceholder.typicode.com/posts/">-->
-<!--            <el-button size="medium" type="primary">upload</el-button>-->
-<!--            <div slot="tip" class="el-upload__tip">Only <b>jpg/png</b> files with size less than <b>500kb</b> can be uploaded</div>-->
-<!--          </el-upload>-->
-<!--        </el-form-item>-->
         <el-form-item>
           <el-button icon="el-icon-magic-stick"
                      round
