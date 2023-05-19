@@ -279,7 +279,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.loading = true
-          axios.get('http://localhost:5000/submit_poster_info', {
+          axios.get('http://172.18.25.80:5000/submit_poster_info', {
             params: this.$store.state.info_form
           }).then((resp) => {
             this.loading = false

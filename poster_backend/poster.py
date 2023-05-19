@@ -19,11 +19,11 @@ class Poster:
         if info_list is None:
             info_list = {'time': '', 'location': '', 'reporter': ''}
         if not photo_url:
-            photo_url = 'http://localhost:5000/get_image/test_user/photo.png'
+            photo_url = 'http://172.18.25.80:5000/get_image/test_user/photo.png'
         if not logo_url:
-            logo_url = 'http://localhost:5000/get_image/test_user/department_logo.png'
+            logo_url = 'http://172.18.25.80:5000/get_image/test_user/department_logo.png'
         if not qrcode_url:
-            qrcode_url = 'http://localhost:5000/get_image/test_user/qrcode.png'
+            qrcode_url = 'http://172.18.25.80:5000/get_image/test_user/qrcode.png'
         self._canvas_width = canvas_width
         self._canvas_height = canvas_height
         self._canvas = np.full(fill_value=255, shape=(self._canvas_height, self._canvas_width, 4), dtype=np.uint8)
@@ -90,7 +90,7 @@ class Poster:
                     elif item['type'] == 'img' and item['img_type'] == 'customized_logo':
                         item['url'] = logo_url
                     elif item['type'] == 'img' and item['img_type'] == 'logo':
-                        item['url'] = "http://localhost:5000/get_image/test_user/school_logo.png"
+                        item['url'] = "http://172.18.25.80:5000/get_image/test_user/school_logo.png"
                     elif item['type'] == 'img' and item['img_type'] == 'qrcode':
                         item['url'] = qrcode_url
             self._layouts += layout_list
@@ -392,4 +392,4 @@ if __name__ == '__main__':
     poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
     for index in tqdm(range(len(poster.layouts))):
         poster.generate(f'static/templates/test_user/template{index}.png', index)
-        poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
+        poster.layouts[index]['preview'] = f'http://172.18.25.80:5000/get_poster_view/test_user/template{index}.png'

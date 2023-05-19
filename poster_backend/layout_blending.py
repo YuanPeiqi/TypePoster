@@ -43,13 +43,13 @@ def lay2json(output_dir, filename, bg1, bg2):
                 data.append({'type': "rect", 'rect_type': 'introduction',
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6], 'content': []})
             elif CONTENT_TYPE[node[-2]] == 'logo':
-                data.append({'type': "img", 'img_type': 'logo', 'url': "http://localhost:5000/get_image/test_user/department_logo.png",
+                data.append({'type': "img", 'img_type': 'logo', 'url': "http://172.18.25.80:5000/get_image/test_user/department_logo.png",
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6]})
             elif CONTENT_TYPE[node[-2]] == 'info':
                 data.append({'type': "rect", 'rect_type': 'info',
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6], 'content': []})
             elif CONTENT_TYPE[node[-2]] == 'photo':
-                data.append({'type': "img", 'img_type': 'photo', 'url': "http://localhost:5000/get_image/test_user/user_photo.png",
+                data.append({'type': "img", 'img_type': 'photo', 'url': "http://172.18.25.80:5000/get_image/test_user/user_photo.png",
                              'x': node[3], 'y': node[4], 'w': node[5], 'h': node[6]})
         json = {
             'id': id,
@@ -161,4 +161,4 @@ if __name__ == '__main__':
         'abstract': 'We present a novel method for blending hierarchical layouts with semantic labels. ''The core of our method is a hierarchical structure correspondence algorithm, ''which recursively finds optimal substructure correspondences, ''achieving a globally optimal correspondence between a pair of hierarchical layouts. ''This correspondence is consistent with the structures of both layouts, ''allowing us to define the union of the layouts’ structures. ''The resulting compound structure helps extract intermediate layout structures, ''from which blended layouts can be generated via an optimization approach.',
         'introduction': 'We present a novel method for blending hierarchical layouts with semantic labels. ''The core of our method is a hierarchical structure correspondence algorithm, ''which recursively finds optimal substructure correspondences, ''achieving a globally optimal correspondence between a pair of hierarchical layouts. ''This correspondence is consistent with the structures of both layouts, ''allowing us to define the union of the layouts’ structures. ''The resulting compound structure helps extract intermediate layout structures, ''from which blended layouts can be generated via an optimization approach.'
     }, 'test_user')
-    print(b.blend('template0.lay', 'template1.lay', "http://localhost:5000/get_image/test_user/bg1.png", "http://localhost:5000/get_image/test_user/bg2.png"))
+    print(b.blend('template0.lay', 'template1.lay', "http://172.18.25.80:5000/get_image/test_user/bg1.png", "http://172.18.25.80:5000/get_image/test_user/bg2.png"))

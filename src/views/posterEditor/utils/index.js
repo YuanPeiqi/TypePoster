@@ -206,7 +206,7 @@ export function domToImgAndSave(dom, options = {}) {
                     _img.height = height
                     _img.src = url
                     document.body.removeChild(dom)
-                    axios.post('http://localhost:5000/save_preview', { url: url.split(',')[1] }).then((resp) => {
+                    axios.post('http://172.18.25.80:5000/save_preview', { url: url.split(',')[1] }).then((resp) => {
                         resolve(resp.data)
                     })
                 })

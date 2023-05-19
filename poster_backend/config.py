@@ -10,7 +10,7 @@ English2Chinese = {'time': '时间:', 'location': '地点:', 'reporter': '报告
 style_list = {
     'business_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/business_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/business_1.png',
             # 'opacity': 0.8,
             'opacity': 1
         },
@@ -28,7 +28,7 @@ style_list = {
     },
     'business_2': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/business_2.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/business_2.png',
             # 'opacity': 0.9
             'opacity': 1
         },
@@ -46,7 +46,7 @@ style_list = {
     },
     'business_3': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/business_3.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/business_3.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -64,7 +64,7 @@ style_list = {
     },
     'business_4': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/business_4.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/business_4.png',
             'opacity': 1
             # 'opacity': 0.85
         },
@@ -82,7 +82,7 @@ style_list = {
     },
     'business_5': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/business_5.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/business_5.png',
             'opacity': 1
             # 'opacity': 0.6
         },
@@ -100,7 +100,7 @@ style_list = {
     },
     'tech_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/tech_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/tech_1.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -118,7 +118,7 @@ style_list = {
     },
     'tech_2': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/tech_2.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/tech_2.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -136,7 +136,7 @@ style_list = {
     },
     'tech_3': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/tech_3.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/tech_3.png',
             'opacity': 1
             # 'opacity': 0.9
         },
@@ -154,7 +154,7 @@ style_list = {
     },
     'tech_4': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/tech_4.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/tech_4.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -172,7 +172,7 @@ style_list = {
     },
     'chemistry_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/chemistry_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/chemistry_1.png',
             'opacity': 1
             # 'opacity': 0.9
         },
@@ -190,7 +190,7 @@ style_list = {
     },
     'chemistry_2': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/chemistry_2.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/chemistry_2.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -208,7 +208,7 @@ style_list = {
     },
     'earth_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/earth_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/earth_1.png',
             'opacity': 1
             # 'opacity': 0.9
         },
@@ -226,7 +226,7 @@ style_list = {
     },
     'chip_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/chip_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/chip_1.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -244,7 +244,7 @@ style_list = {
     },
     'chip_2': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/chip_2.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/chip_2.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -262,7 +262,7 @@ style_list = {
     },
     'cs_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/cs_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/cs_1.png',
             'opacity': 1
             # 'opacity': 0.7
         },
@@ -280,7 +280,7 @@ style_list = {
     },
     'AI_1': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/AI_1.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/AI_1.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -298,7 +298,7 @@ style_list = {
     },
     'bioscience_2': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/bioscience_2.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/bioscience_2.png',
             'opacity': 1
             # 'opacity': 0.5
         },
@@ -316,7 +316,7 @@ style_list = {
     },
     'bioscience_3': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/bioscience_3.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/bioscience_3.png',
             'opacity': 1
             # 'opacity': 0.8
         },
@@ -334,7 +334,7 @@ style_list = {
     },
     'bioscience_4': {
         'background': {
-            'url': 'http://localhost:5000/get_background/test_user/bioscience_4.png',
+            'url': 'http://172.18.25.80:5000/get_background/test_user/bioscience_4.png',
             'opacity': 1
             # 'opacity': 0.8
         },

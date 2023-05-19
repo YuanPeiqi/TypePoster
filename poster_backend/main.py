@@ -29,7 +29,7 @@ def save_preview():
     path = f'.\\static\\previews\\{filename}.png'
     with open(path, 'wb') as f:
         f.write(img)
-    return f'http://localhost:5000/get_preview/{filename}.png'
+    return f'http://172.18.25.80:5000/get_preview/{filename}.png'
 
 
 @app.route("/save_layouts", methods=['GET', 'POST'])
@@ -49,7 +49,7 @@ def upload():
         filepath = os.path.join('.\\static\\images\\test_user\\', filename)
         file.save(filepath)
 
-        file_url = f'http://localhost:5000/get_image/test_user/{filename}'
+        file_url = f'http://172.18.25.80:5000/get_image/test_user/{filename}'
         return jsonify({'name': file.filename, 'url': file_url, 'msg': 'success'})
     return jsonify({'name': '', 'url': '', 'msg': 'error'})
 
@@ -75,7 +75,7 @@ def blend_layouts():
         os.mkdir(f'static/templates/{user_id}/blending_img_results')
     for index in range(len(generator.layouts)):
         generator.generate(f'static/templates/test_user/blending_img_results/template{index}.png', index)
-        generator.layouts[index]['preview'] = f'http://localhost:5000/get_blending_img_result/{user_id}/template{index}.png/{random.randint(1, 1000000)}'
+        generator.layouts[index]['preview'] = f'http://172.18.25.80:5000/get_blending_img_result/{user_id}/template{index}.png/{random.randint(1, 1000000)}'
     return jsonify(generator.layouts)
 
 
@@ -104,7 +104,7 @@ def submit_poster_info():
         os.mkdir(f'static/templates/{user_id}')
     for index in tqdm(range(len(generator.layouts))):
         generator.generate(f'static/templates/test_user/template{index}.png', index)
-        generator.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/{user_id}/template{index}.png'
+        generator.layouts[index]['preview'] = f'http://172.18.25.80:5000/get_poster_view/{user_id}/template{index}.png'
     return jsonify(generator.layouts)
 
 

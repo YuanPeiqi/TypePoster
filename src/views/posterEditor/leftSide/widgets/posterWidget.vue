@@ -283,7 +283,7 @@ export default {
       });
       this.blending_list = []
       this.alpha = 0
-      axios.get('http://localhost:5000/blend', {
+      axios.get('http://172.18.25.80:5000/blend', {
         params: {
           userid: this.user,
           lay1: this.blender1[0]['layout_file'],
