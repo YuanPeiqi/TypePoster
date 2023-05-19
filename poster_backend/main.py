@@ -32,6 +32,14 @@ def save_preview():
     return f'http://localhost:5000/get_preview/{filename}.png'
 
 
+@app.route("/save_layouts", methods=['GET', 'POST'])
+def save_layouts():
+    layout_list = request.values.get('layout_list')
+    username = request.values.get('username')
+    # TODO: 存入数据库中做保存
+    return 'success'
+
+
 @app.route("/upload", methods=['POST'])
 def upload():
     file = request.files.get('file')

@@ -124,7 +124,10 @@ export default {
     }
   },
   created() {
-    this.renderPoster(0)
+    if(!this.$store.state.poster_list){
+      this.renderPoster(0)
+      this.$store.state.poster_list = true
+    }
   },
   methods: {
     ...mapActions(['addItem', 'addAssistWidget', 'addBackground', 'removeAllAssistWidgets', 'removeBackground', 'removeAllItems']),

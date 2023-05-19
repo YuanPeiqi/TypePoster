@@ -38,7 +38,8 @@ const store = new Vuex.Store({
         },
         info_form: [],
         poster_list: [],
-        blending_list: []
+        blending_list: [],
+        first_render: false
     },
     mutations: {
         setPosterList(state, value) {

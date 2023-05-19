@@ -392,4 +392,4 @@ if __name__ == '__main__':
     poster = Poster(title=title, info_list=info_list, abstract=abstract, introduction=introduction)
     for index in tqdm(range(len(poster.layouts))):
         poster.generate(f'static/templates/test_user/template{index}.png', index)
-        poster.layouts[index]["preview"] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
+        poster.layouts[index]['preview'] = f'http://localhost:5000/get_poster_view/test_user/template{index}.png'
